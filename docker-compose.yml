@@ -1,0 +1,211 @@
+version: '3.8'
+
+services:
+  # ===========================================
+  # Firebase Emulator Suite (Local Development)
+  # ===========================================
+  firebase-emulator:
+    image: node:18-slim
+    container_name: salon-firebase
+    working_dir: /app
+    volumes:
+      - ./infrastructure/local/firebase:/app
+      - firebase-data:/root/.cache
+    ports:
+      - "9099:9099"   # Firebase Auth
+      - "8080:8080"   # Firestore
+      - "4000:4000"   # Emulator UI
+      - "9199:9199"   # Storage
+    environment:
+      - FIREBASE_PROJECT_ID=salon-flow-dev
+    command: |
+      bash -c "
+        npm install -g firebase-tools &&
+        firebase emulators:start --project=salon-flow-dev --only auth,firestore,storage
+      "
+    networks:
+      - salon-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===========================================
+  # API Service (FastAPI)
+  # ===========================================
+  api-service:
+    build:
+      context: ./services/api
+      dockerfile: Dockerfile
+    container_name: salon-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - FIREBASE_PROJECT_ID=salon-flow-dev
+      - FIRESTORE_EMULATOR_HOST=firebase-emulator:8080
+      - FIREBASE_AUTH_EMULATOR_HOST=firebase-emulator:9099
+      - REDIS_URL=redis://redis:6379
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+    volumes:
+      - ./services/api:/app
+      - ./infrastructure/local/firebase:/firebase:ro
+    depends_on:
+      firebase-emulator:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - salon-network
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ===========================================
+  # AI Agent Service
+  # ===========================================
+  ai-service:
+    build:
+      context: ./services/ai
+      dockerfile: Dockerfile
+    container_name: salon-ai
+    ports:
+      - "8001:8001"
+    environment:
+      - ENVIRONMENT=development
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - REDIS_URL=redis://redis:6379
+      - API_SERVICE_URL=http://api-service:8000
+    volumes:
+      - ./services/ai:/app
+    depends_on:
+      - redis
+      - api-service
+    networks:
+      - salon-network
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+
+  # ===========================================
+  # Notification Service
+  # ===========================================
+  notification-service:
+    build:
+      context: ./services/notification
+      dockerfile: Dockerfile
+    container_name: salon-notification
+    ports:
+      - "8002:8002"
+    environment:
+      - ENVIRONMENT=development
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID:-}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN:-}
+      - TWILIO_PHONE_NUMBER=${TWILIO_PHONE_NUMBER:-}
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - ./services/notification:/app
+    depends_on:
+      - redis
+    networks:
+      - salon-network
+    command: uvicorn main:app --host 0.0.0.0 --port 8002 --reload
+
+  # ===========================================
+  # Redis (Caching & Message Queue)
+  # ===========================================
+  redis:
+    image: redis:7-alpine
+    container_name: salon-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - salon-network
+    command: redis-server --appendonly yes
+
+  # ===========================================
+  # Client PWA (React + Vite)
+  # ===========================================
+  client-app:
+    build:
+      context: ./apps/client
+      dockerfile: Dockerfile.dev
+    container_name: salon-client
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_FIREBASE_PROJECT_ID=salon-flow-dev
+    volumes:
+      - ./apps/client:/app
+      - /app/node_modules
+    networks:
+      - salon-network
+    command: npm run dev -- --host
+
+  # ===========================================
+  # Staff PWA (React + Vite)
+  # ===========================================
+  staff-app:
+    build:
+      context: ./apps/staff
+      dockerfile: Dockerfile.dev
+    container_name: salon-staff
+    ports:
+      - "3001:3001"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_FIREBASE_PROJECT_ID=salon-flow-dev
+    volumes:
+      - ./apps/staff:/app
+      - /app/node_modules
+    networks:
+      - salon-network
+    command: npm run dev -- --host --port 3001
+
+  # ===========================================
+  # Manager PWA (React + Vite)
+  # ===========================================
+  manager-app:
+    build:
+      context: ./apps/manager
+      dockerfile: Dockerfile.dev
+    container_name: salon-manager
+    ports:
+      - "3002:3002"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_FIREBASE_PROJECT_ID=salon-flow-dev
+    volumes:
+      - ./apps/manager:/app
+      - /app/node_modules
+    networks:
+      - salon-network
+    command: npm run dev -- --host --port 3002
+
+  # ===========================================
+  # Owner PWA (React + Vite)
+  # ===========================================
+  owner-app:
+    build:
+      context: ./apps/owner
+      dockerfile: Dockerfile.dev
+    container_name: salon-owner
+    ports:
+      - "3003:3003"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_FIREBASE_PROJECT_ID=salon-flow-dev
+    volumes:
+      - ./apps/owner:/app
+      - /app/node_modules
+    networks:
+      - salon-network
+    command: npm run dev -- --host --port 3003
+
+networks:
+  salon-network:
+    driver: bridge
+
+volumes:
+  firebase-data:
+  redis-data:

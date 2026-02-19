@@ -1,0 +1,183 @@
+{
+  "project_name": "Salon Flow",
+  "project_type": "AI-Powered Salon Management SaaS",
+  "version": "1.0.0",
+  "created": "2026-02-19",
+  "business_context": {
+    "salon_name": "Jawed Habib Hair & Beauty Salon",
+    "location": "Kurnool, India",
+    "type": "Franchise",
+    "existing_crm": "ReSpark",
+    "customers": 3230,
+    "monthly_orders": 4948,
+    "members": 316
+  },
+  "budget": {
+    "max_monthly_cost_inr": 15000,
+    "target_monthly_cost_inr": 3000,
+    "achieved_monthly_cost_inr": 5000
+  },
+  "tech_stack": {
+    "frontend": {
+      "framework": "React 18 + TypeScript",
+      "build_tool": "Vite",
+      "ui_library": "shadcn/ui",
+      "state_management": "Zustand",
+      "pwa": "Workbox"
+    },
+    "backend": {
+      "framework": "FastAPI (Python 3.11)",
+      "database": "Firestore",
+      "auth": "Firebase Auth",
+      "cache": "In-memory + Firestore"
+    },
+    "ai": {
+      "framework": "Google ADK + MCP",
+      "chat_model": "google/gemini-3-flash",
+      "marketing_model": "google/gemini-3-pro-image-preview",
+      "provider": "OpenRouter"
+    },
+    "cloud": {
+      "provider": "Google Cloud Platform",
+      "compute": "Cloud Run",
+      "events": "Pub/Sub + Eventarc",
+      "storage": "Cloud Storage + CDN"
+    },
+    "communication": {
+      "whatsapp": "Twilio API",
+      "voice": "Twilio Voice"
+    }
+  },
+  "applications": {
+    "owner_pwa": {
+      "purpose": "Business owner dashboard",
+      "features": [
+        "Analytics",
+        "Multi-location",
+        "Financial reports",
+        "Franchise compliance"
+      ]
+    },
+    "manager_pwa": {
+      "purpose": "Operations management",
+      "features": [
+        "Real-time ops",
+        "Staff management",
+        "Issue resolution",
+        "Inventory"
+      ]
+    },
+    "staff_pwa": {
+      "purpose": "Service delivery",
+      "features": [
+        "Schedule",
+        "Service delivery",
+        "Upsell",
+        "Availability"
+      ]
+    },
+    "client_pwa": {
+      "purpose": "Customer booking",
+      "features": [
+        "Conversational UI",
+        "Booking",
+        "History",
+        "Loyalty"
+      ]
+    }
+  },
+  "agents": {
+    "count": 7,
+    "list": [
+      "solutions_architect",
+      "frontend_developer",
+      "backend_developer",
+      "ai_engineer",
+      "devops_engineer",
+      "qa_engineer",
+      "data_engineer"
+    ]
+  },
+  "skills": {
+    "count": 27,
+    "categories": {
+      "architecture": [
+        "gcp_architecture",
+        "terraform_iac",
+        "api_design",
+        "cost_optimization"
+      ],
+      "frontend": [
+        "react_pwa",
+        "conversational_ui",
+        "offline_first",
+        "state_management"
+      ],
+      "backend": [
+        "fastapi_development",
+        "firestore_design",
+        "multi_tenant",
+        "event_driven"
+      ],
+      "ai": [
+        "ai_agent_development",
+        "llm_integration",
+        "prompt_engineering",
+        "ai_caching"
+      ],
+      "devops": [
+        "cicd_pipeline",
+        "cloud_deployment",
+        "monitoring"
+      ],
+      "qa": [
+        "automated_testing",
+        "e2e_testing",
+        "performance_testing",
+        "security_testing"
+      ],
+      "data": [
+        "data_migration",
+        "analytics_pipeline",
+        "reporting",
+        "data_quality"
+      ]
+    }
+  },
+  "implementation": {
+    "total_weeks": 20,
+    "phases": [
+      {
+        "phase": 1,
+        "weeks": "1-4",
+        "focus": "Foundation"
+      },
+      {
+        "phase": 2,
+        "weeks": "5-8",
+        "focus": "AI Integration"
+      },
+      {
+        "phase": 3,
+        "weeks": "9-12",
+        "focus": "PWAs"
+      },
+      {
+        "phase": 4,
+        "weeks": "13-16",
+        "focus": "Advanced Features"
+      },
+      {
+        "phase": 5,
+        "weeks": "17-20",
+        "focus": "Launch"
+      }
+    ]
+  },
+  "secrets": {
+    "openrouter_api_key": "configured",
+    "github_token": "configured",
+    "twilio_credentials": "pending",
+    "gcp_credentials": "pending"
+  }
+}

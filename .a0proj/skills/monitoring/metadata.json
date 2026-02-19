@@ -1,0 +1,9 @@
+{
+  "name": "Monitoring",
+  "version": "1.0.0",
+  "description": "Skill for monitoring",
+  "tags": [
+    "monitoring"
+  ],
+  "author": "Salon SaaS Team"
+}

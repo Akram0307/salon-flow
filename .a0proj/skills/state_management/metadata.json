@@ -1,0 +1,10 @@
+{
+  "name": "State Management",
+  "version": "1.0.0",
+  "description": "Skill for state management",
+  "tags": [
+    "state",
+    "management"
+  ],
+  "author": "Salon SaaS Team"
+}

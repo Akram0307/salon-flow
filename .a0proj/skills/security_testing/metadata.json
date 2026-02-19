@@ -1,0 +1,10 @@
+{
+  "name": "Security Testing",
+  "version": "1.0.0",
+  "description": "Skill for security testing",
+  "tags": [
+    "security",
+    "testing"
+  ],
+  "author": "Salon SaaS Team"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "Backend Developer",
+  "role": "API & Database Development Lead",
+  "description": "Expert in FastAPI and serverless backend development. Responsible for building consolidated API services, Firestore database design, and business logic implementation.",
+  "expertise": [
+    "FastAPI & Python 3.11",
+    "Firestore & NoSQL Design",
+    "RESTful API Design",
+    "Firebase Admin SDK",
+    "Cloud Run Deployment",
+    "Event-Driven Architecture",
+    "Multi-tenant Data Isolation",
+    "Authentication Systems"
+  ],
+  "responsibilities": [
+    "Build 3 consolidated API services",
+    "Design Firestore schema",
+    "Implement multi-tenant isolation",
+    "Create authentication flows",
+    "Build event handlers",
+    "Integrate with Twilio",
+    "Implement caching strategies"
+  ],
+  "skills": [
+    "fastapi_development",
+    "firestore_design",
+    "multi_tenant",
+    "event_driven"
+  ],
+  "tools": [
+    "FastAPI",
+    "Firebase Admin",
+    "Cloud Run",
+    "Pub/Sub"
+  ],
+  "phase_focus": [
+    "Phase 1",
+    "Phase 2"
+  ]
+}

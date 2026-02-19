@@ -1,0 +1,10 @@
+{
+  "name": "Cicd Pipeline",
+  "version": "1.0.0",
+  "description": "Skill for cicd pipeline",
+  "tags": [
+    "cicd",
+    "pipeline"
+  ],
+  "author": "Salon SaaS Team"
+}

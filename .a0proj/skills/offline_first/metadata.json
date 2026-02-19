@@ -1,0 +1,10 @@
+{
+  "name": "Offline First",
+  "version": "1.0.0",
+  "description": "Skill for offline first",
+  "tags": [
+    "offline",
+    "first"
+  ],
+  "author": "Salon SaaS Team"
+}

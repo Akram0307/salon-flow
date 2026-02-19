@@ -1,0 +1,10 @@
+{
+  "name": "Automated Testing",
+  "version": "1.0.0",
+  "description": "Skill for automated testing",
+  "tags": [
+    "automated",
+    "testing"
+  ],
+  "author": "Salon SaaS Team"
+}

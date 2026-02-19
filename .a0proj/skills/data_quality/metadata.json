@@ -1,0 +1,10 @@
+{
+  "name": "Data Quality",
+  "version": "1.0.0",
+  "description": "Skill for data quality",
+  "tags": [
+    "data",
+    "quality"
+  ],
+  "author": "Salon SaaS Team"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "Frontend Developer",
+  "role": "PWA & UI/UX Development Lead",
+  "description": "Specialist in React Progressive Web Apps with offline-first capabilities. Responsible for building all 4 PWAs (Owner, Manager, Staff, Client) with modern conversational UI.",
+  "expertise": [
+    "React 18 & TypeScript",
+    "Progressive Web Apps",
+    "Offline-First Architecture",
+    "State Management (Zustand)",
+    "UI Component Libraries",
+    "Service Workers",
+    "Push Notifications",
+    "Conversational UI Design"
+  ],
+  "responsibilities": [
+    "Build 4 React PWAs",
+    "Implement offline capabilities",
+    "Create conversational chat UI",
+    "Integrate with backend APIs",
+    "Implement push notifications",
+    "Ensure responsive design",
+    "Optimize performance"
+  ],
+  "skills": [
+    "react_pwa",
+    "conversational_ui",
+    "offline_first",
+    "state_management"
+  ],
+  "tools": [
+    "Vite",
+    "shadcn/ui",
+    "Workbox",
+    "React Query"
+  ],
+  "phase_focus": [
+    "Phase 3",
+    "Phase 4"
+  ]
+}

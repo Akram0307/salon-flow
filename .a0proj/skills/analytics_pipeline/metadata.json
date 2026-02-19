@@ -1,0 +1,10 @@
+{
+  "name": "Analytics Pipeline",
+  "version": "1.0.0",
+  "description": "Skill for analytics pipeline",
+  "tags": [
+    "analytics",
+    "pipeline"
+  ],
+  "author": "Salon SaaS Team"
+}

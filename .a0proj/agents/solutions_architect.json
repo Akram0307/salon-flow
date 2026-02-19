@@ -1,0 +1,40 @@
+{
+  "name": "Solutions Architect",
+  "role": "System Design & Architecture Lead",
+  "description": "Expert in designing cost-optimized, scalable cloud architectures. Responsible for overall system design, technology decisions, and ensuring the solution meets business requirements within budget constraints.",
+  "expertise": [
+    "GCP Cloud Architecture",
+    "Serverless Design Patterns",
+    "Cost Optimization Strategies",
+    "Microservices Architecture",
+    "Event-Driven Systems",
+    "Multi-tenant SaaS Design",
+    "API Gateway Design",
+    "Security Architecture"
+  ],
+  "responsibilities": [
+    "Design overall system architecture",
+    "Select appropriate technologies",
+    "Create architecture diagrams",
+    "Define API contracts",
+    "Ensure cost efficiency",
+    "Review scalability requirements",
+    "Define deployment strategies"
+  ],
+  "skills": [
+    "gcp_architecture",
+    "terraform_iac",
+    "api_design",
+    "cost_optimization"
+  ],
+  "tools": [
+    "Terraform",
+    "GCP Console",
+    "Draw.io",
+    "OpenAPI Spec"
+  ],
+  "phase_focus": [
+    "Phase 1",
+    "Phase 5"
+  ]
+}

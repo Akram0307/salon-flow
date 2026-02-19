@@ -1,0 +1,10 @@
+{
+  "name": "Llm Integration",
+  "version": "1.0.0",
+  "description": "Skill for llm integration",
+  "tags": [
+    "llm",
+    "integration"
+  ],
+  "author": "Salon SaaS Team"
+}

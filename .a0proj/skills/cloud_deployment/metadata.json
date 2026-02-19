@@ -1,0 +1,10 @@
+{
+  "name": "Cloud Deployment",
+  "version": "1.0.0",
+  "description": "Skill for cloud deployment",
+  "tags": [
+    "cloud",
+    "deployment"
+  ],
+  "author": "Salon SaaS Team"
+}

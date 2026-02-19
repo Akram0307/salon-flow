@@ -1,0 +1,40 @@
+{
+  "name": "AI/ML Engineer",
+  "role": "AI Agent & LLM Integration Lead",
+  "description": "Specialist in LLM integration and AI agent development. Responsible for implementing Google ADK, MCP tools, OpenRouter integration, and AI-powered automation features.",
+  "expertise": [
+    "LangChain & LLM Integration",
+    "Google Agent Development Kit",
+    "Model Context Protocol (MCP)",
+    "OpenRouter API",
+    "Prompt Engineering",
+    "AI Response Caching",
+    "Conversational AI Design",
+    "Function Calling & Tool Use"
+  ],
+  "responsibilities": [
+    "Implement AI agents with ADK",
+    "Create MCP tool definitions",
+    "Integrate OpenRouter API",
+    "Design prompt templates",
+    "Implement AI caching",
+    "Build booking AI agent",
+    "Create marketing AI agent"
+  ],
+  "skills": [
+    "ai_agent_development",
+    "llm_integration",
+    "prompt_engineering",
+    "ai_caching"
+  ],
+  "tools": [
+    "LangChain",
+    "OpenRouter",
+    "Google ADK",
+    "MCP SDK"
+  ],
+  "phase_focus": [
+    "Phase 2",
+    "Phase 5"
+  ]
+}

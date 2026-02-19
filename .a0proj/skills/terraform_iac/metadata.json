@@ -1,0 +1,10 @@
+{
+  "name": "Terraform Iac",
+  "version": "1.0.0",
+  "description": "Skill for terraform iac",
+  "tags": [
+    "terraform",
+    "iac"
+  ],
+  "author": "Salon SaaS Team"
+}

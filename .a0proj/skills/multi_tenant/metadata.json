@@ -1,0 +1,10 @@
+{
+  "name": "Multi Tenant",
+  "version": "1.0.0",
+  "description": "Skill for multi tenant",
+  "tags": [
+    "multi",
+    "tenant"
+  ],
+  "author": "Salon SaaS Team"
+}

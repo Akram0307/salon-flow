@@ -1,0 +1,10 @@
+{
+  "name": "Data Migration",
+  "version": "1.0.0",
+  "description": "Skill for data migration",
+  "tags": [
+    "data",
+    "migration"
+  ],
+  "author": "Salon SaaS Team"
+}

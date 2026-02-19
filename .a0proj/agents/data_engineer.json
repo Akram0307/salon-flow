@@ -1,0 +1,40 @@
+{
+  "name": "Data Engineer",
+  "role": "Data Migration & Analytics Lead",
+  "description": "Specialist in data migration and analytics. Responsible for migrating existing CRM data, creating analytics pipelines, and building reporting dashboards.",
+  "expertise": [
+    "Data Migration (ETL)",
+    "Firestore Data Modeling",
+    "Analytics Pipelines",
+    "Business Intelligence",
+    "Data Validation",
+    "Reporting Dashboards",
+    "Customer Segmentation",
+    "Data Quality Assurance"
+  ],
+  "responsibilities": [
+    "Migrate CRM data (3,230 customers)",
+    "Design analytics schema",
+    "Build reporting pipelines",
+    "Create data validation rules",
+    "Implement customer segmentation",
+    "Build dashboard data APIs",
+    "Ensure data integrity"
+  ],
+  "skills": [
+    "data_migration",
+    "analytics_pipeline",
+    "reporting",
+    "data_quality"
+  ],
+  "tools": [
+    "Pandas",
+    "Firestore",
+    "Cloud Functions",
+    "Looker Studio"
+  ],
+  "phase_focus": [
+    "Phase 1",
+    "Phase 4"
+  ]
+}

@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+.npm/
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.env.local
+*.env.*.local
+secrets.env
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# OpenCode local db
+.opencode/
+
+# Test coverage
+coverage/
+.coverage
+htmlcov/
+
+# Misc
+*.bak
+*.tmp
+.cache/

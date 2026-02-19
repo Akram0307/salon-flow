@@ -1,0 +1,10 @@
+{
+  "name": "Fastapi Development",
+  "version": "1.0.0",
+  "description": "Skill for fastapi development",
+  "tags": [
+    "fastapi",
+    "development"
+  ],
+  "author": "Salon SaaS Team"
+}

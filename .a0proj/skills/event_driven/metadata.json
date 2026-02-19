@@ -1,0 +1,10 @@
+{
+  "name": "Event Driven",
+  "version": "1.0.0",
+  "description": "Skill for event driven",
+  "tags": [
+    "event",
+    "driven"
+  ],
+  "author": "Salon SaaS Team"
+}

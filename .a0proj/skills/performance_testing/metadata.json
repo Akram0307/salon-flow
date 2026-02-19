@@ -1,0 +1,10 @@
+{
+  "name": "Performance Testing",
+  "version": "1.0.0",
+  "description": "Skill for performance testing",
+  "tags": [
+    "performance",
+    "testing"
+  ],
+  "author": "Salon SaaS Team"
+}

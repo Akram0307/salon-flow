@@ -1,0 +1,10 @@
+{
+  "name": "Conversational Ui",
+  "version": "1.0.0",
+  "description": "Skill for conversational ui",
+  "tags": [
+    "conversational",
+    "ui"
+  ],
+  "author": "Salon SaaS Team"
+}

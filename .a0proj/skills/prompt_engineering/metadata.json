@@ -1,0 +1,10 @@
+{
+  "name": "Prompt Engineering",
+  "version": "1.0.0",
+  "description": "Skill for prompt engineering",
+  "tags": [
+    "prompt",
+    "engineering"
+  ],
+  "author": "Salon SaaS Team"
+}

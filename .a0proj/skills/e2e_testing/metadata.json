@@ -1,0 +1,10 @@
+{
+  "name": "E2E Testing",
+  "version": "1.0.0",
+  "description": "Skill for e2e testing",
+  "tags": [
+    "e2e",
+    "testing"
+  ],
+  "author": "Salon SaaS Team"
+}

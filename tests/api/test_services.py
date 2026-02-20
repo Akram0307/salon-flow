@@ -36,7 +36,7 @@ from app.schemas.base import StaffRole, ServiceCategory, ResourceType
 def app():
     """Create test FastAPI app."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/services")
     return app
 
 
@@ -130,7 +130,7 @@ class TestServiceList:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/services")
+                response = await client.get("/api/v1/services/")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -158,7 +158,7 @@ class TestServiceList:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/services?category=haircut")
+                response = await client.get("/api/v1/services?category=haircut")
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -190,7 +190,7 @@ class TestServiceCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/services",
+                    "/api/v1/services",
                     json={
                         "name": "Haircut",
                         "description": "Professional haircut service",
@@ -233,7 +233,7 @@ class TestServiceCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/services",
+                    "/api/v1/services",
                     json={
                         "name": "Haircut",
                         "description": "Professional haircut service",
@@ -282,7 +282,7 @@ class TestServiceGet:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/services/service_001")
+                response = await client.get("/api/v1/services/service_001")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -305,7 +305,7 @@ class TestServiceGet:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/services/nonexistent")
+                response = await client.get("/api/v1/services/nonexistent")
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
@@ -339,7 +339,7 @@ class TestServiceUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/services/service_001",
+                    "/api/v1/services/service_001",
                     json={"pricing": {"base_price": "600.00"}}
                 )
 
@@ -365,7 +365,7 @@ class TestServiceUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/services/service_001",
+                    "/api/v1/services/service_001",
                     json={"is_active": False}
                 )
 
@@ -400,7 +400,7 @@ class TestServiceDelete:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.delete("/services/service_001")
+                response = await client.delete("/api/v1/services/service_001")
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
@@ -420,7 +420,7 @@ class TestServiceDelete:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.delete("/services/nonexistent")
+                response = await client.delete("/api/v1/services/nonexistent")
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
@@ -446,7 +446,7 @@ class TestServiceEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/services",
+                "/api/v1/services",
                 json={
                     "name": "Haircut",
                     "description": "Professional haircut service",
@@ -477,7 +477,7 @@ class TestServiceEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/services",
+                "/api/v1/services",
                 json={
                     "name": "Haircut",
                     "description": "Professional haircut service",

@@ -34,7 +34,7 @@ from app.schemas.base import StaffRole
 def app():
     """Create test FastAPI app."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/shifts")
     return app
 
 
@@ -112,7 +112,7 @@ class TestShiftList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/shifts")
+                response = await client.get("/api/v1/shifts/")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -140,7 +140,7 @@ class TestShiftList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/shifts?shift_date=2024-01-15")
+                response = await client.get("/api/v1/shifts?shift_date=2024-01-15")
         
         assert response.status_code == status.HTTP_200_OK
         
@@ -180,7 +180,7 @@ class TestShiftCreate:
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
                     response = await client.post(
-                        "/shifts",
+                        "/api/v1/shifts",
                         json={
                             "staff_id": "staff_001",
                             "shift_date": "2024-01-15",
@@ -222,7 +222,7 @@ class TestShiftCreate:
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
                     response = await client.post(
-                        "/shifts",
+                        "/api/v1/shifts",
                         json={
                             "staff_id": "staff_001",
                             "shift_date": "2024-01-15",
@@ -260,7 +260,7 @@ class TestShiftGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/shifts/shift_001")
+                response = await client.get("/api/v1/shifts/shift_001")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -282,7 +282,7 @@ class TestShiftGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/shifts/nonexistent")
+                response = await client.get("/api/v1/shifts/nonexistent")
         
         assert response.status_code == status.HTTP_404_NOT_FOUND
         
@@ -316,7 +316,7 @@ class TestShiftUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/shifts/shift_001",
+                    "/api/v1/shifts/shift_001",
                     json={"notes": "Updated notes"}
                 )
         
@@ -344,7 +344,7 @@ class TestShiftUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/shifts/shift_001",
+                    "/api/v1/shifts/shift_001",
                     json={"status": "cancelled"}
                 )
         
@@ -374,7 +374,7 @@ class TestShiftEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/shifts",
+                "/api/v1/shifts",
                 json={
                     "staff_id": "staff_001",
                     "shift_date": "2024-01-15",
@@ -398,7 +398,7 @@ class TestShiftEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/shifts",
+                "/api/v1/shifts",
                 json={
                     "staff_id": "staff_001",
                     "shift_date": "2024-01-15",
@@ -451,7 +451,7 @@ class TestShiftMultiTenant:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/shifts/shift_002")
+                response = await client.get("/api/v1/shifts/shift_002")
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
         

@@ -38,7 +38,7 @@ from app.schemas import Salon, SalonLayout, SalonSettings, SalonSubscription
 def app():
     """Create a test FastAPI app."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/tenants")
     return app
 
 
@@ -136,7 +136,7 @@ class TestSalonEndpoints:
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
             response = client.post(
-                "/tenants",
+                "/api/v1/tenants",
                 json={
                     "name": "Jawed Habib Kurnool",
                     "phone": "+919876543210",
@@ -165,7 +165,7 @@ class TestSalonEndpoints:
         app.dependency_overrides[get_current_user] = lambda: auth_context_owner
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
-            response = client.get(f"/tenants/{mock_salon.id}")
+            response = client.get(f"/api/v1/tenants/{mock_salon.id}")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -197,7 +197,7 @@ class TestSalonEndpoints:
         app.dependency_overrides[get_current_user] = lambda: other_context
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
-            response = client.get(f"/tenants/{mock_salon.id}")
+            response = client.get(f"/api/v1/tenants/{mock_salon.id}")
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
         
@@ -218,7 +218,7 @@ class TestSalonEndpoints:
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
             response = client.put(
-                f"/tenants/{mock_salon.id}",
+                f"/api/v1/tenants/{mock_salon.id}",
                 json={
                     "name": "Jawed Habib Kurnool Updated",
                     "phone": "+919876543211",
@@ -246,7 +246,7 @@ class TestSalonLayout:
         app.dependency_overrides[get_current_user] = lambda: auth_context_owner
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
-            response = client.get(f"/tenants/{mock_salon.id}/layout")
+            response = client.get(f"/api/v1/tenants/{mock_salon.id}/layout")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -271,7 +271,7 @@ class TestSalonLayout:
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
             response = client.put(
-                f"/tenants/{mock_salon.id}/layout",
+                f"/api/v1/tenants/{mock_salon.id}/layout",
                 json={
                     "mens_chairs": 8,
                     "womens_chairs": 6,
@@ -307,7 +307,7 @@ class TestSalonSettings:
         app.dependency_overrides[get_current_user] = lambda: auth_context_owner
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
-            response = client.get(f"/tenants/{mock_salon.id}/settings")
+            response = client.get(f"/api/v1/tenants/{mock_salon.id}/settings")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -333,7 +333,7 @@ class TestSalonSettings:
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
             response = client.put(
-                f"/tenants/{mock_salon.id}/settings",
+                f"/api/v1/tenants/{mock_salon.id}/settings",
                 json={
                     "accept_card": True,
                     "reminder_hours_before": 24,
@@ -361,7 +361,7 @@ class TestSalonBusinessSettings:
         app.dependency_overrides[get_current_user] = lambda: auth_context_owner
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
-            response = client.get(f"/tenants/{mock_salon.id}/business-settings")
+            response = client.get(f"/api/v1/tenants/{mock_salon.id}/business-settings")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -386,7 +386,7 @@ class TestSalonBusinessSettings:
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
             response = client.put(
-                f"/tenants/{mock_salon.id}/business-settings",
+                f"/api/v1/tenants/{mock_salon.id}/business-settings",
                 json={
                     "gst_rate": 5.0,
                     "loyalty_rate": 0.1,
@@ -417,7 +417,7 @@ class TestSalonSubscription:
         app.dependency_overrides[require_owner] = lambda: auth_context_owner
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
-            response = client.get(f"/tenants/{mock_salon.id}/subscription")
+            response = client.get(f"/api/v1/tenants/{mock_salon.id}/subscription")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -441,7 +441,7 @@ class TestSalonSubscription:
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
             response = client.put(
-                f"/tenants/{mock_salon.id}/subscription",
+                f"/api/v1/tenants/{mock_salon.id}/subscription",
                 json={
                     "plan": "professional",
                     "billing_cycle": "monthly",

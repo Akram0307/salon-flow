@@ -15,7 +15,7 @@ import uuid
 import logging
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/loyalty", tags=["Loyalty"])
+router = APIRouter(tags=["Loyalty"])
 
 
 class LoyaltyConfig(FirestoreBase):

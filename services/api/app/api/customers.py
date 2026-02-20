@@ -40,7 +40,7 @@ from app.schemas import (
 )
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/customers", tags=["Customer Management"])
+router = APIRouter(tags=["Customer Management"])
 
 
 # ============================================================================
@@ -99,7 +99,7 @@ class LoyaltyBalanceResponse(BaseModel):
 # ============================================================================
 
 @router.get(
-    "",
+    "/",
     response_model=PaginatedResponse[CustomerSummary],
     summary="List customers",
     description="List all customers with pagination and search support.",
@@ -161,7 +161,7 @@ async def list_customers(
 
 
 @router.post(
-    "",
+    "/",
     response_model=Customer,
     status_code=status.HTTP_201_CREATED,
     summary="Create customer",

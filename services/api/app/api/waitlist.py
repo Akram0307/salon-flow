@@ -12,7 +12,7 @@ import uuid
 import logging
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/waitlist", tags=["Waitlist"])
+router = APIRouter(tags=["Waitlist"])
 
 
 class WaitlistEntry(FirestoreBase):
@@ -78,7 +78,7 @@ async def _estimate_wait_time(salon_id: str, queue_position: int) -> int:
     return queue_position * avg_service_time
 
 
-@router.post("", response_model=WaitlistEntryResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=WaitlistEntryResponse, status_code=status.HTTP_201_CREATED)
 async def create_waitlist_entry(
     data: WaitlistEntryCreate,
     salon_id: str = Depends(get_salon_id),
@@ -117,7 +117,7 @@ async def create_waitlist_entry(
     return WaitlistEntryResponse(**entry.to_dict())
 
 
-@router.get("", response_model=List[WaitlistEntryResponse])
+@router.get("/", response_model=List[WaitlistEntryResponse])
 async def list_waitlist(
     status: Optional[WaitlistStatus] = Query(None),
     service_id: Optional[str] = Query(None),

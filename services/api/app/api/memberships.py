@@ -31,7 +31,7 @@ from app.schemas import (
 )
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/memberships", tags=["Membership Management"])
+router = APIRouter(tags=["Membership Management"])
 
 
 # ============================================================================
@@ -71,7 +71,7 @@ class ExpiringMembershipResponse(BaseModel):
 # ============================================================================
 
 @router.get(
-    "",
+    "/",
     response_model=PaginatedResponse[MembershipSummary],
     summary="List memberships",
     description="List all memberships with pagination and filtering.",
@@ -107,7 +107,7 @@ async def list_memberships(
 
 
 @router.post(
-    "",
+    "/",
     response_model=Membership,
     status_code=status.HTTP_201_CREATED,
     summary="Create membership",

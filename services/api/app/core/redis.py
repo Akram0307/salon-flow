@@ -1,24 +1,31 @@
 """Enhanced Redis client for caching with connection pooling and utilities.
 
 Supports both local Redis and Upstash (serverless Redis with TLS).
+Uses Upstash REST API for serverless environments.
 """
 import os
-import redis.asyncio as redis
-from redis.asyncio.connection import ConnectionPool
-import structlog
-from typing import Optional, Any, List, Callable, TypeVar, ParamSpec
-from functools import wraps
 import json
 import hashlib
 import gzip
 import base64
-import asyncio
+import structlog
+from typing import Optional, Any, List, Callable, TypeVar, ParamSpec
+from functools import wraps
 from datetime import timedelta
 
 logger = structlog.get_logger()
 
 P = ParamSpec('P')
 T = TypeVar('T')
+
+# Try to import Upstash Redis first, fall back to standard Redis
+try:
+    from upstash_redis import Redis as UpstashRedis
+    UPSTASH_AVAILABLE = True
+except ImportError:
+    UPSTASH_AVAILABLE = False
+    import redis.asyncio as redis
+    from redis.asyncio.connection import ConnectionPool
 
 
 class CacheConfig:
@@ -43,6 +50,7 @@ class RedisClient:
     """Enhanced async Redis client with connection pooling and caching utilities.
     
     Supports:
+    - Upstash Redis REST API (preferred for serverless)
     - Local Redis (redis://)
     - Upstash Redis (rediss://) with TLS
     - Connection pooling for optimal performance
@@ -50,14 +58,20 @@ class RedisClient:
     """
 
     def __init__(self, url: str = None):
+        # Check for Upstash REST API credentials first
+        self.rest_url = os.getenv("UPSTASH_REDIS_REST_URL")
+        self.rest_token = os.getenv("UPSTASH_REDIS_REST_TOKEN")
+        
         # Support both REDIS_URL and UPSTASH_REDIS_URL env vars
         self.url = url or os.getenv("UPSTASH_REDIS_URL") or os.getenv("REDIS_URL", "redis://localhost:6379")
-        self._pool: Optional[ConnectionPool] = None
-        self.client: Optional[redis.Redis] = None
+        
+        self._pool = None
+        self.client = None
         self._connected = False
-        self._is_upstash = self.url.startswith("rediss://")
+        self._is_upstash_rest = bool(self.rest_url and self.rest_token)
+        self._is_upstash = self.url.startswith("rediss://") if self.url else False
 
-        # Connection pool settings for optimal performance
+        # Connection pool settings for traditional Redis
         self.pool_settings = {
             "max_connections": 50,
             "retry_on_timeout": True,
@@ -67,38 +81,46 @@ class RedisClient:
             "socket_timeout": 5,
         }
         
-        # Upstash-specific settings
-        if self._is_upstash:
-            # Upstash requires TLS and has different connection settings
-            self.pool_settings["ssl_cert_reqs"] = None  # Allow self-signed certs
+        if self._is_upstash and not self._is_upstash_rest:
+            self.pool_settings["ssl_cert_reqs"] = None
             logger.info("Configured for Upstash Redis with TLS")
 
     async def connect(self):
-        """Connect to Redis with connection pooling."""
+        """Connect to Redis."""
         if self._connected and self.client:
             return
 
         try:
-            self._pool = ConnectionPool.from_url(
-                self.url,
-                encoding="utf-8",
-                decode_responses=True,
-                **self.pool_settings
-            )
-            self.client = redis.Redis(connection_pool=self._pool)
-            await self.client.ping()
-            self._connected = True
-            logger.info("Connected to Redis with connection pool", 
-                       url=self.url.replace(self.url.split('@')[-1], '***') if '@' in self.url else self.url,
-                       is_upstash=self._is_upstash)
+            # Prefer Upstash REST API for serverless
+            if self._is_upstash_rest and UPSTASH_AVAILABLE:
+                self.client = UpstashRedis(
+                    url=self.rest_url,
+                    token=self.rest_token
+                )
+                # Test connection
+                self.client.ping()
+                self._connected = True
+                logger.info("Connected to Upstash Redis via REST API")
+            else:
+                # Fall back to traditional Redis connection
+                self._pool = ConnectionPool.from_url(
+                    self.url,
+                    encoding="utf-8",
+                    decode_responses=True,
+                    **self.pool_settings
+                )
+                self.client = redis.Redis(connection_pool=self._pool)
+                await self.client.ping()
+                self._connected = True
+                logger.info("Connected to Redis with connection pool",
+                           url=self.url.replace(self.url.split('@')[-1], '***') if '@' in self.url else self.url)
         except Exception as e:
             logger.warning("Redis connection failed - running without cache", error=str(e))
             self._connected = False
-            # Don't raise - allow app to run without Redis
 
     async def disconnect(self):
         """Disconnect from Redis and release connections."""
-        if self.client:
+        if self.client and not self._is_upstash_rest:
             await self.client.aclose()
         if self._pool:
             await self._pool.aclose()
@@ -110,8 +132,11 @@ class RedisClient:
         if not self.client:
             return False
         try:
-            await self.client.ping()
-            return True
+            if self._is_upstash_rest:
+                return self.client.ping() == "PONG"
+            else:
+                await self.client.ping()
+                return True
         except Exception:
             return False
 
@@ -129,7 +154,11 @@ class RedisClient:
         if not self.is_connected:
             return None
         try:
-            value = await self.client.get(key)
+            if self._is_upstash_rest:
+                value = self.client.get(key)
+            else:
+                value = await self.client.get(key)
+            
             if value:
                 try:
                     return json.loads(value)
@@ -157,13 +186,23 @@ class RedisClient:
 
             if compress and len(value) > 1024:
                 value = self._compress(value)
-                await self.client.set(f"{key}:compressed", "1", ex=expire)
+                if self._is_upstash_rest:
+                    self.client.set(f"{key}:compressed", "1", ex=expire)
+                else:
+                    await self.client.set(f"{key}:compressed", "1", ex=expire)
 
-            if nx:
-                return await self.client.set(key, value, ex=expire, nx=True)
+            if self._is_upstash_rest:
+                if nx:
+                    return self.client.set(key, value, ex=expire, nx=True)
+                else:
+                    self.client.set(key, value, ex=expire)
+                return True
             else:
-                await self.client.set(key, value, ex=expire)
-            return True
+                if nx:
+                    return await self.client.set(key, value, ex=expire, nx=True)
+                else:
+                    await self.client.set(key, value, ex=expire)
+                return True
         except Exception as e:
             logger.warning("Redis set failed", key=key, error=str(e))
             return False
@@ -173,7 +212,10 @@ class RedisClient:
         if not self.is_connected:
             return False
         try:
-            await self.client.delete(key, f"{key}:compressed")
+            if self._is_upstash_rest:
+                self.client.delete(key, f"{key}:compressed")
+            else:
+                await self.client.delete(key, f"{key}:compressed")
             return True
         except Exception as e:
             logger.warning("Redis delete failed", key=key, error=str(e))
@@ -184,7 +226,10 @@ class RedisClient:
         if not self.is_connected:
             return False
         try:
-            return await self.client.exists(key) > 0
+            if self._is_upstash_rest:
+                return self.client.exists(key) > 0
+            else:
+                return await self.client.exists(key) > 0
         except Exception:
             return False
 
@@ -193,7 +238,10 @@ class RedisClient:
         if not self.is_connected:
             return False
         try:
-            return await self.client.expire(key, seconds)
+            if self._is_upstash_rest:
+                return self.client.expire(key, seconds)
+            else:
+                return await self.client.expire(key, seconds)
         except Exception:
             return False
 
@@ -202,7 +250,10 @@ class RedisClient:
         if not self.is_connected:
             return -2
         try:
-            return await self.client.ttl(key)
+            if self._is_upstash_rest:
+                return self.client.ttl(key)
+            else:
+                return await self.client.ttl(key)
         except Exception:
             return -2
 
@@ -215,7 +266,11 @@ class RedisClient:
         if not self.is_connected or not keys:
             return {}
         try:
-            values = await self.client.mget(keys)
+            if self._is_upstash_rest:
+                values = self.client.mget(keys)
+            else:
+                values = await self.client.mget(keys)
+            
             result = {}
             for key, value in zip(keys, values):
                 if value:
@@ -233,12 +288,18 @@ class RedisClient:
         if not self.is_connected or not mapping:
             return False
         try:
-            async with self.client.pipeline() as pipe:
+            if self._is_upstash_rest:
                 for key, value in mapping.items():
                     if isinstance(value, (dict, list)):
                         value = json.dumps(value)
-                    pipe.set(key, value, ex=expire)
-                await pipe.execute()
+                    self.client.set(key, value, ex=expire)
+            else:
+                async with self.client.pipeline() as pipe:
+                    for key, value in mapping.items():
+                        if isinstance(value, (dict, list)):
+                            value = json.dumps(value)
+                        pipe.set(key, value, ex=expire)
+                    await pipe.execute()
             return True
         except Exception as e:
             logger.warning("Redis mset failed", error=str(e))
@@ -250,7 +311,10 @@ class RedisClient:
             return 0
         try:
             all_keys = keys + [f"{k}:compressed" for k in keys]
-            return await self.client.delete(*all_keys)
+            if self._is_upstash_rest:
+                return self.client.delete(*all_keys)
+            else:
+                return await self.client.delete(*all_keys)
         except Exception as e:
             logger.warning("Redis multi-delete failed", error=str(e))
             return 0
@@ -265,10 +329,20 @@ class RedisClient:
             return 0
         try:
             keys = []
-            async for key in self.client.scan_iter(match=pattern):
-                keys.append(key)
+            if self._is_upstash_rest:
+                # Upstash REST API doesn't support scan_iter directly
+                # Use keys command for small datasets
+                all_keys = self.client.keys(pattern)
+                keys = all_keys if all_keys else []
+            else:
+                async for key in self.client.scan_iter(match=pattern):
+                    keys.append(key)
+            
             if keys:
-                return await self.client.delete(*keys)
+                if self._is_upstash_rest:
+                    return self.client.delete(*keys)
+                else:
+                    return await self.client.delete(*keys)
             return 0
         except Exception as e:
             logger.warning("Redis pattern delete failed", pattern=pattern, error=str(e))
@@ -279,10 +353,13 @@ class RedisClient:
         if not self.is_connected:
             return []
         try:
-            keys = []
-            async for key in self.client.scan_iter(match=pattern):
-                keys.append(key)
-            return keys
+            if self._is_upstash_rest:
+                return self.client.keys(pattern) or []
+            else:
+                keys = []
+                async for key in self.client.scan_iter(match=pattern):
+                    keys.append(key)
+                return keys
         except Exception:
             return []
 

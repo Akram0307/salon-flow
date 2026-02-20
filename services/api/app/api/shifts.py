@@ -35,7 +35,7 @@ from app.schemas import (
 )
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/shifts", tags=["Shift Management"])
+router = APIRouter(tags=["Shift Management"])
 
 
 # ============================================================================
@@ -81,7 +81,7 @@ class LeaveRequestResponse(BaseModel):
 # ============================================================================
 
 @router.get(
-    "",
+    "/",
     response_model=PaginatedResponse[ShiftSummary],
     summary="List shifts",
     description="List all shifts with pagination and filtering.",
@@ -119,7 +119,7 @@ async def list_shifts(
 
 
 @router.post(
-    "",
+    "/",
     response_model=Shift,
     status_code=status.HTTP_201_CREATED,
     summary="Create shift",

@@ -34,7 +34,7 @@ from app.schemas.base import StaffRole, ResourceType, ResourceStatus
 def app():
     """Create test FastAPI app."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/resources")
     return app
 
 
@@ -119,7 +119,7 @@ class TestResourceList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/resources")
+                response = await client.get("/api/v1/resources/")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -147,7 +147,7 @@ class TestResourceList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/resources?resource_type=chair_mens")
+                response = await client.get("/api/v1/resources?resource_type=chair_mens")
         
         assert response.status_code == status.HTTP_200_OK
         
@@ -179,7 +179,7 @@ class TestResourceCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/resources",
+                    "/api/v1/resources",
                     json={
                         "name": "Chair 1",
                         "resource_type": "chair_mens",
@@ -210,7 +210,7 @@ class TestResourceCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/resources",
+                    "/api/v1/resources",
                     json={
                         "name": "Chair 1",
                         "resource_type": "chair_mens",
@@ -245,7 +245,7 @@ class TestResourceGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/resources/resource_001")
+                response = await client.get("/api/v1/resources/resource_001")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -267,7 +267,7 @@ class TestResourceGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/resources/nonexistent")
+                response = await client.get("/api/v1/resources/nonexistent")
         
         assert response.status_code == status.HTTP_404_NOT_FOUND
         
@@ -301,7 +301,7 @@ class TestResourceUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/resources/resource_001",
+                    "/api/v1/resources/resource_001",
                     json={"name": "Premium Chair"}
                 )
         
@@ -329,7 +329,7 @@ class TestResourceUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/resources/resource_001",
+                    "/api/v1/resources/resource_001",
                     json={"is_active": False}
                 )
         
@@ -359,7 +359,7 @@ class TestResourceEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/resources",
+                "/api/v1/resources",
                 json={
                     "name": "",  # Empty name
                     "resource_type": "chair_mens",
@@ -380,7 +380,7 @@ class TestResourceEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/resources",
+                "/api/v1/resources",
                 json={
                     "name": "Test Resource",
                     "resource_type": "invalid_type",  # Invalid type
@@ -428,7 +428,7 @@ class TestResourceMultiTenant:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/resources/resource_002")
+                response = await client.get("/api/v1/resources/resource_002")
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
         

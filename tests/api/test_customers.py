@@ -42,7 +42,7 @@ from app.schemas import (
 def app():
     """Create test FastAPI app."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/customers")
     return app
 
 
@@ -168,7 +168,7 @@ class TestCustomerList:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/customers")
+                response = await client.get("/api/v1/customers/")
 
         assert response.status_code == 200
         data = response.json()
@@ -197,7 +197,7 @@ class TestCustomerList:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/customers")
+                response = await client.get("/api/v1/customers/")
 
         assert response.status_code == 200
         data = response.json()
@@ -231,7 +231,7 @@ class TestCustomerCreate:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.post("/customers", json={
+                response = await client.post("/api/v1/customers/", json={
                     "name": "John Doe",
                     "phone": "9876543210",
                     "email": "john@example.com",
@@ -259,7 +259,7 @@ class TestCustomerCreate:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.post("/customers", json={
+                response = await client.post("/api/v1/customers/", json={
                     "name": "John Doe",
                     "phone": "9876543210",
                     "gender": "male",
@@ -290,7 +290,7 @@ class TestCustomerGet:
         with patch('app.api.customers.verify_customer_access', return_value=mock_customer):
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/customers/customer_001")
+                response = await client.get("/api/v1/customers/customer_001")
 
         assert response.status_code == 200
         data = response.json()
@@ -315,7 +315,7 @@ class TestCustomerGet:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/customers/nonexistent")
+                response = await client.get("/api/v1/customers/nonexistent")
 
         assert response.status_code == 404
 
@@ -337,7 +337,7 @@ class TestCustomerGet:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/customers/customer_002")
+                response = await client.get("/api/v1/customers/customer_002")
 
         assert response.status_code == 403
 
@@ -370,7 +370,7 @@ class TestCustomerUpdate:
 
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
-                    response = await client.put("/customers/customer_001", json={
+                    response = await client.put("/api/v1/customers/customer_001", json={
                         "name": "Jane Doe",
                     })
 
@@ -405,7 +405,7 @@ class TestCustomerDelete:
 
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
-                    response = await client.delete("/customers/customer_001")
+                    response = await client.delete("/api/v1/customers/customer_001")
 
         assert response.status_code == 204
 
@@ -442,7 +442,7 @@ class TestCustomerBookings:
 
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
-                    response = await client.get("/customers/customer_001/bookings")
+                    response = await client.get("/api/v1/customers/customer_001/bookings")
 
         assert response.status_code == 200
         data = response.json()
@@ -482,7 +482,7 @@ class TestLoyaltyPoints:
 
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
-                    response = await client.get("/customers/customer_001/loyalty")
+                    response = await client.get("/api/v1/customers/customer_001/loyalty")
 
         assert response.status_code == 200
         data = response.json()
@@ -505,7 +505,7 @@ class TestLoyaltyPoints:
 
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
-                    response = await client.post("/customers/customer_001/loyalty/earn", json={
+                    response = await client.post("/api/v1/customers/customer_001/loyalty/earn", json={
                         "amount": 500,
                         "booking_id": "booking_001",
                     })
@@ -524,7 +524,7 @@ class TestLoyaltyPoints:
         with patch('app.api.customers.verify_customer_access', return_value=mock_customer):
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.post("/customers/customer_001/loyalty/earn", json={
+                response = await client.post("/api/v1/customers/customer_001/loyalty/earn", json={
                     "amount": 5,  # Too low (less than 10)
                     "booking_id": "booking_001",
                 })
@@ -551,7 +551,7 @@ class TestLoyaltyPoints:
 
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
-                    response = await client.post("/customers/customer_001/loyalty/redeem", json={
+                    response = await client.post("/api/v1/customers/customer_001/loyalty/redeem", json={
                         "points": 50,
                         "booking_id": "booking_001",
                     })
@@ -577,7 +577,7 @@ class TestLoyaltyPoints:
 
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
-                    response = await client.post("/customers/customer_001/loyalty/redeem", json={
+                    response = await client.post("/api/v1/customers/customer_001/loyalty/redeem", json={
                         "points": 1000,  # More than balance (150)
                         "booking_id": "booking_001",
                     })

@@ -48,7 +48,7 @@ from app.schemas.base import StaffRole
 def app():
     """Create FastAPI app with auth router."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/auth")
     return app
 
 
@@ -536,7 +536,7 @@ class TestAuthEndpoints:
         app.dependency_overrides[get_auth_service] = lambda: mock_auth_service
         
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "test@example.com",
                 "password": "password123",
@@ -562,7 +562,7 @@ class TestAuthEndpoints:
         app.dependency_overrides[get_auth_service] = lambda: mock_auth_service
         
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "owner@example.com",
                 "password": "password123",
@@ -587,7 +587,7 @@ class TestAuthEndpoints:
         app.dependency_overrides[get_auth_service] = lambda: mock_auth_service
         
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             json={
                 "email": "test@example.com",
                 "password": "password123",
@@ -613,7 +613,7 @@ class TestAuthEndpoints:
         app.dependency_overrides[get_auth_service] = lambda: mock_auth_service
         
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             json={
                 "email": "wrong@example.com",
                 "password": "wrongpassword",
@@ -633,7 +633,7 @@ class TestAuthEndpoints:
         app.dependency_overrides[get_auth_service] = lambda: mock_auth_service
         
         response = client.post(
-            "/auth/phone-otp",
+            "/api/v1/auth/phone-otp",
             json={
                 "phone": "+919876543210",
             },
@@ -654,7 +654,7 @@ class TestAuthEndpoints:
         app.dependency_overrides[get_auth_service] = lambda: mock_auth_service
         
         response = client.post(
-            "/auth/verify-otp",
+            "/api/v1/auth/verify-otp",
             json={
                 "phone": "+919876543210",
                 "otp": "123456",
@@ -680,7 +680,7 @@ class TestAuthEndpoints:
         app.dependency_overrides[get_auth_service] = lambda: mock_auth_service
         
         response = client.post(
-            "/auth/verify-otp",
+            "/api/v1/auth/verify-otp",
             json={
                 "phone": "+919876543210",
                 "otp": "000000",
@@ -697,7 +697,7 @@ class TestProtectedEndpoints:
     
     def test_get_current_user_unauthorized(self, client):
         """Test /auth/me without token."""
-        response = client.get("/auth/me")
+        response = client.get("/api/v1/auth/me")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
     
     @patch('app.api.dependencies.get_current_user')

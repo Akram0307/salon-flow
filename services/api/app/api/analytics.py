@@ -21,7 +21,7 @@ import logging
 from collections import defaultdict
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/analytics", tags=["Analytics"])
+router = APIRouter(tags=["Analytics"])
 
 
 @router.get("/dashboard", response_model=DashboardSummary)

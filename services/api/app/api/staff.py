@@ -37,7 +37,7 @@ from app.schemas import (
 )
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/staff", tags=["Staff Management"])
+router = APIRouter(tags=["Staff Management"])
 
 
 # ============================================================================
@@ -80,7 +80,7 @@ class SkillsResponse(BaseModel):
 # ============================================================================
 
 @router.get(
-    "",
+    "/",
     response_model=PaginatedResponse[StaffSummary],
     summary="List staff",
     description="List all staff members with pagination and filtering.",
@@ -123,7 +123,7 @@ async def list_staff(
 
 
 @router.post(
-    "",
+    "/",
     response_model=Staff,
     status_code=status.HTTP_201_CREATED,
     summary="Create staff",

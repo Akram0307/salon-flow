@@ -35,7 +35,7 @@ from app.schemas.base import StaffRole
 def app():
     """Create test FastAPI app."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/memberships")
     return app
 
 
@@ -128,7 +128,7 @@ class TestMembershipList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/memberships")
+                response = await client.get("/api/v1/memberships/")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -156,7 +156,7 @@ class TestMembershipList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/memberships?status=active")
+                response = await client.get("/api/v1/memberships?status=active")
         
         assert response.status_code == status.HTTP_200_OK
         
@@ -195,7 +195,7 @@ class TestMembershipCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/memberships",
+                    "/api/v1/memberships",
                     json={
                         "customer_id": "customer_001",
                         "plan_id": "plan_001",
@@ -234,7 +234,7 @@ class TestMembershipCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/memberships",
+                    "/api/v1/memberships",
                     json={
                         "customer_id": "customer_001",
                         "plan_id": "plan_001",
@@ -273,7 +273,7 @@ class TestMembershipGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/memberships/membership_001")
+                response = await client.get("/api/v1/memberships/membership_001")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -295,7 +295,7 @@ class TestMembershipGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/memberships/nonexistent")
+                response = await client.get("/api/v1/memberships/nonexistent")
         
         assert response.status_code == status.HTTP_404_NOT_FOUND
         
@@ -329,7 +329,7 @@ class TestMembershipUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/memberships/membership_001",
+                    "/api/v1/memberships/membership_001",
                     json={"auto_renew": True}
                 )
         
@@ -357,7 +357,7 @@ class TestMembershipUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/memberships/membership_001",
+                    "/api/v1/memberships/membership_001",
                     json={"status": "cancelled"}
                 )
         
@@ -400,7 +400,7 @@ class TestMembershipRenewal:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/memberships/membership_001/renew",
+                    "/api/v1/memberships/membership_001/renew",
                     json={
                         "duration_months": 12,
                     }
@@ -430,7 +430,7 @@ class TestMembershipEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/memberships",
+                "/api/v1/memberships",
                 json={
                     "customer_id": "customer_001",
                     "plan_id": "plan_001",
@@ -455,7 +455,7 @@ class TestMembershipEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/memberships",
+                "/api/v1/memberships",
                 json={
                     "customer_id": "customer_001",
                     "plan_id": "plan_001",
@@ -510,7 +510,7 @@ class TestMembershipMultiTenant:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/memberships/membership_002")
+                response = await client.get("/api/v1/memberships/membership_002")
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
         

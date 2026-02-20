@@ -37,7 +37,7 @@ from app.services.auth_service import AuthService, get_auth_service
 from app.api.dependencies import get_current_user, AuthContext
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter(tags=["Authentication"])
 security = HTTPBearer(auto_error=False)
 
 

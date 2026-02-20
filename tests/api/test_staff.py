@@ -38,7 +38,7 @@ from app.schemas.base import StaffRole, StaffStatus, Gender, ExpertiseLevel, Sal
 def app():
     """Create test FastAPI app."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/staff")
     return app
 
 
@@ -157,7 +157,7 @@ class TestStaffList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/staff")
+                response = await client.get("/api/v1/staff/")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -185,7 +185,7 @@ class TestStaffList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/staff?role=stylist")
+                response = await client.get("/api/v1/staff?role=stylist")
         
         assert response.status_code == status.HTTP_200_OK
         
@@ -217,7 +217,7 @@ class TestStaffCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/staff",
+                    "/api/v1/staff",
                     json={
                         "name": "John Doe",
                         "phone": "+1234567890",
@@ -249,7 +249,7 @@ class TestStaffCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/staff",
+                    "/api/v1/staff",
                     json={
                         "name": "John Doe",
                         "phone": "+1234567890",
@@ -285,7 +285,7 @@ class TestStaffGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/staff/staff_001")
+                response = await client.get("/api/v1/staff/staff_001")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -307,7 +307,7 @@ class TestStaffGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/staff/nonexistent")
+                response = await client.get("/api/v1/staff/nonexistent")
         
         assert response.status_code == status.HTTP_404_NOT_FOUND
         
@@ -341,7 +341,7 @@ class TestStaffUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/staff/staff_001",
+                    "/api/v1/staff/staff_001",
                     json={"name": "John Smith"}
                 )
         
@@ -369,7 +369,7 @@ class TestStaffUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/staff/staff_001",
+                    "/api/v1/staff/staff_001",
                     json={"is_active": False}
                 )
         
@@ -399,7 +399,7 @@ class TestStaffEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/staff",
+                "/api/v1/staff",
                 json={
                     "name": "",  # Empty name
                     "phone": "+1234567890",
@@ -421,7 +421,7 @@ class TestStaffEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/staff",
+                "/api/v1/staff",
                 json={
                     "name": "John Doe",
                     "phone": "invalid",  # Invalid phone
@@ -474,7 +474,7 @@ class TestStaffMultiTenant:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/staff/staff_002")
+                response = await client.get("/api/v1/staff/staff_002")
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
         

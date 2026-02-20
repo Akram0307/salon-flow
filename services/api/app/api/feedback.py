@@ -14,7 +14,7 @@ import uuid
 import logging
 
 logger = logging.getLogger(__name__)
-router = APIRouter(prefix="/feedback", tags=["Feedback"])
+router = APIRouter(tags=["Feedback"])
 
 
 class Feedback(FirestoreBase):
@@ -93,7 +93,7 @@ class FeedbackReply(FirestoreBase):
         }
 
 
-@router.post("", response_model=FeedbackResponse, status_code=status.HTTP_201_CREATED)
+@router.post("/", response_model=FeedbackResponse, status_code=status.HTTP_201_CREATED)
 async def create_feedback(
     data: FeedbackCreate,
     salon_id: str = Depends(get_salon_id),
@@ -126,7 +126,7 @@ async def create_feedback(
     return FeedbackResponse(**feedback.to_dict())
 
 
-@router.get("", response_model=List[FeedbackResponse])
+@router.get("/", response_model=List[FeedbackResponse])
 async def list_feedback(
     feedback_type: Optional[FeedbackType] = Query(None),
     status: Optional[FeedbackStatus] = Query(None),

@@ -35,7 +35,7 @@ from app.schemas.base import StaffRole, PaymentMethod, PaymentStatus
 def app():
     """Create test FastAPI app."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/payments")
     return app
 
 
@@ -117,7 +117,7 @@ class TestPaymentList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/payments")
+                response = await client.get("/api/v1/payments/")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -145,7 +145,7 @@ class TestPaymentList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/payments?payment_status=completed")
+                response = await client.get("/api/v1/payments?payment_status=completed")
         
         assert response.status_code == status.HTTP_200_OK
         
@@ -184,7 +184,7 @@ class TestPaymentCreate:
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
                     response = await client.post(
-                        "/payments",
+                        "/api/v1/payments",
                         json={
                             "booking_id": "booking_001",
                             "customer_id": "customer_001",
@@ -233,7 +233,7 @@ class TestPaymentCreate:
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
                     response = await client.post(
-                        "/payments",
+                        "/api/v1/payments",
                         json={
                             "booking_id": "booking_001",
                             "customer_id": "customer_001",
@@ -277,7 +277,7 @@ class TestPaymentGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/payments/payment_001")
+                response = await client.get("/api/v1/payments/payment_001")
         
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -299,7 +299,7 @@ class TestPaymentGet:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/payments/nonexistent")
+                response = await client.get("/api/v1/payments/nonexistent")
         
         assert response.status_code == status.HTTP_404_NOT_FOUND
         
@@ -333,7 +333,7 @@ class TestPaymentUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/payments/payment_001",
+                    "/api/v1/payments/payment_001",
                     json={"tip_amount": "100.00"}
                 )
         
@@ -361,7 +361,7 @@ class TestPaymentUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/payments/payment_001",
+                    "/api/v1/payments/payment_001",
                     json={"payment_status": "refunded"}
                 )
         
@@ -399,7 +399,7 @@ class TestPaymentEdgeCases:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/payments",
+                    "/api/v1/payments",
                     json={
                         "booking_id": "booking_001",
                         "customer_id": "customer_001",
@@ -433,7 +433,7 @@ class TestPaymentEdgeCases:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/payments",
+                    "/api/v1/payments",
                     json={
                         "booking_id": "booking_001",
                         "customer_id": "customer_001",
@@ -490,7 +490,7 @@ class TestPaymentMultiTenant:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/payments/payment_002")
+                response = await client.get("/api/v1/payments/payment_002")
         
         assert response.status_code == status.HTTP_403_FORBIDDEN
         

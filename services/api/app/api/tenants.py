@@ -37,7 +37,7 @@ from app.schemas import (
 from app.core.redis import redis_client, CacheConfig
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/tenants", tags=["Tenant Management"])
+router = APIRouter(tags=["Tenant Management"])
 
 
 # ============================================================================
@@ -125,7 +125,7 @@ class BusinessSettings(BaseModel):
 # ============================================================================
 
 @router.post(
-    "",
+    "/",
     response_model=Salon,
     status_code=status.HTTP_201_CREATED,
     summary="Create new salon",

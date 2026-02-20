@@ -33,7 +33,7 @@ from app.schemas import (
 )
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/payments", tags=["Payment Management"])
+router = APIRouter(tags=["Payment Management"])
 
 
 # ============================================================================
@@ -73,7 +73,7 @@ class MonthlyRevenueResponse(BaseModel):
 # ============================================================================
 
 @router.get(
-    "",
+    "/",
     response_model=PaginatedResponse[PaymentSummary],
     summary="List payments",
     description="List all payments with pagination and filtering.",
@@ -113,7 +113,7 @@ async def list_payments(
 
 
 @router.post(
-    "",
+    "/",
     response_model=Payment,
     status_code=status.HTTP_201_CREATED,
     summary="Create payment",

@@ -38,7 +38,7 @@ from app.schemas import (
 )
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/bookings", tags=["Booking Management"])
+router = APIRouter(tags=["Booking Management"])
 
 
 # ============================================================================
@@ -145,7 +145,7 @@ class SlotsResponse(BaseModel):
 # ============================================================================
 
 @router.get(
-    "",
+    "/",
     response_model=PaginatedResponse[BookingSummary],
     summary="List bookings",
     description="List all bookings with pagination and filtering.",
@@ -208,7 +208,7 @@ async def list_bookings(
 
 
 @router.post(
-    "",
+    "/",
     response_model=Booking,
     status_code=status.HTTP_201_CREATED,
     summary="Create booking",

@@ -35,7 +35,7 @@ from app.schemas.staff import Staff, StaffSkills, ServiceSkill, ExpertiseLevel
 def app():
     """Create test FastAPI app."""
     app = FastAPI()
-    app.include_router(router)
+    app.include_router(router, prefix="/api/v1/bookings")
     return app
 
 
@@ -160,7 +160,7 @@ class TestBookingList:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/bookings")
+                response = await client.get("/api/v1/bookings/")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -188,7 +188,7 @@ class TestBookingList:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/bookings?date_filter=2024-01-15")
+                response = await client.get("/api/v1/bookings?date_filter=2024-01-15")
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -234,7 +234,7 @@ class TestBookingCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/bookings",
+                    "/api/v1/bookings",
                     json={
                         "salon_id": "salon_001",
                         "customer_id": "customer_001",
@@ -281,7 +281,7 @@ class TestBookingCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/bookings",
+                    "/api/v1/bookings",
                     json={
                         "salon_id": "salon_001",
                         "customer_id": "customer_001",
@@ -326,7 +326,7 @@ class TestBookingGet:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/bookings/booking_001")
+                response = await client.get("/api/v1/bookings/booking_001")
 
         assert response.status_code == status.HTTP_200_OK
         data = response.json()
@@ -348,7 +348,7 @@ class TestBookingGet:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/bookings/nonexistent")
+                response = await client.get("/api/v1/bookings/nonexistent")
 
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
@@ -383,7 +383,7 @@ class TestBookingUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/bookings/booking_001",
+                    "/api/v1/bookings/booking_001",
                     json={"notes": "Updated notes"}
                 )
 
@@ -410,7 +410,7 @@ class TestBookingUpdate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.put(
-                    "/bookings/booking_001",
+                    "/api/v1/bookings/booking_001",
                     json={"status": "checked_in"}
                 )
 
@@ -446,7 +446,7 @@ class TestBookingCancel:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.delete("/bookings/booking_001")
+                response = await client.delete("/api/v1/bookings/booking_001")
 
         assert response.status_code == status.HTTP_204_NO_CONTENT
 
@@ -469,7 +469,7 @@ class TestBookingCancel:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.delete("/bookings/booking_001")
+                response = await client.delete("/api/v1/bookings/booking_001")
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 

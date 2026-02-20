@@ -31,7 +31,7 @@ from app.schemas import (
 )
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/resources", tags=["Resource Management"])
+router = APIRouter(tags=["Resource Management"])
 
 
 # ============================================================================
@@ -61,7 +61,7 @@ class ResourceAvailabilityResponse(BaseModel):
 # ============================================================================
 
 @router.get(
-    "",
+    "/",
     response_model=PaginatedResponse[ResourceSummary],
     summary="List resources",
     description="List all resources with pagination and filtering.",
@@ -97,7 +97,7 @@ async def list_resources(
 
 
 @router.post(
-    "",
+    "/",
     response_model=Resource,
     status_code=status.HTTP_201_CREATED,
     summary="Create resource",

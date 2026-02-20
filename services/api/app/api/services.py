@@ -35,7 +35,7 @@ from app.schemas import (
 from app.core.redis import redis_client, CacheConfig
 
 logger = structlog.get_logger()
-router = APIRouter(prefix="/services", tags=["Service Catalog"])
+router = APIRouter(tags=["Service Catalog"])
 
 
 # ============================================================================
@@ -103,7 +103,7 @@ class BulkImportResponse(BaseModel):
 # ============================================================================
 
 @router.get(
-    "",
+    "/",
     response_model=PaginatedResponse[ServiceSummary],
     summary="List services",
     description="List all services with pagination and category filtering.",
@@ -177,7 +177,7 @@ async def list_services(
 
 
 @router.post(
-    "",
+    "/",
     response_model=Service,
     status_code=status.HTTP_201_CREATED,
     summary="Create service",

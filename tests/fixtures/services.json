@@ -1,0 +1,62 @@
+[
+  {
+    "id": "service_001",
+    "salon_id": "salon_001",
+    "name": "Men's Haircut",
+    "category": "Haircuts",
+    "description": "Professional men's haircut with styling",
+    "base_price": 300,
+    "duration_minutes": 30,
+    "resource_type": "chair",
+    "gst_rate": 5,
+    "active": true
+  },
+  {
+    "id": "service_002",
+    "salon_id": "salon_001",
+    "name": "Women's Haircut",
+    "category": "Haircuts",
+    "description": "Professional women's haircut with blow dry",
+    "base_price": 500,
+    "duration_minutes": 45,
+    "resource_type": "chair",
+    "gst_rate": 5,
+    "active": true
+  },
+  {
+    "id": "service_003",
+    "salon_id": "salon_001",
+    "name": "Keratin Treatment",
+    "category": "Hair Treatment",
+    "description": "Professional keratin smoothing treatment",
+    "base_price": 5000,
+    "duration_minutes": 120,
+    "resource_type": "room",
+    "gst_rate": 5,
+    "active": true
+  },
+  {
+    "id": "service_004",
+    "salon_id": "salon_001",
+    "name": "Bridal Makeup",
+    "category": "Bridal & Groom",
+    "description": "Complete bridal makeup package",
+    "base_price": 15000,
+    "duration_minutes": 180,
+    "resource_type": "room",
+    "gst_rate": 5,
+    "active": true
+  },
+  {
+    "id": "service_005",
+    "salon_id": "salon_001",
+    "name": "Head Massage",
+    "category": "Spa & Massage",
+    "description": "Relaxing head massage with oil",
+    "base_price": 500,
+    "duration_minutes": 30,
+    "resource_type": "room",
+    "gst_rate": 5,
+    "active": true
+  }
+]

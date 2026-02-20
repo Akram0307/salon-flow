@@ -1,51 +1,138 @@
+# ===========================================
+# Salon Flow - Git Ignore
+# ===========================================
+
+# Environment
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-venv/
-env/
-.venv/
-*.egg-info/
-dist/
 build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+venv/
+.venv/
+ENV/
+env/
 
-# Node
+# Node.js
 node_modules/
-.npm/
-*.log
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Secrets
-*.env.local
-*.env.*.local
-secrets.env
+.npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
 # Build outputs
 dist/
 build/
 .next/
 out/
+.nuxt/
+.cache/
+.vuepress/dist/
+.serverless/
+.docusaurus/
 
-# OpenCode local db
-.opencode/
-
-# Test coverage
-coverage/
+# Testing
 .coverage
+.pytest_cache/
+coverage/
 htmlcov/
+*.cover
+.hypothesis/
+.tox/
+.nox/
+coverage.xml
+*.py,cover
+junit.xml
+test-results/
+playwright-report/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker
+*.log
+docker-compose.override.yml
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Secrets
+*.pem
+*.key
+secrets/
+.secrets.baseline
+
+# Logs
+logs/
+*.log
 
 # Misc
 *.bak
 *.tmp
+*.temp
 .cache/
+.npm/
+.eslintcache
+.stylelintcache
+
+# TypeScript
+*.tsbuildinfo
+
+# PWA
+dev-dist/
+sw.js
+workbox-*.js
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Opencode
+.opencode/
+services/api/gcp_credentials.json

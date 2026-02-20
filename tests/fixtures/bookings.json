@@ -1,0 +1,42 @@
+[
+  {
+    "id": "booking_001",
+    "salon_id": "salon_001",
+    "customer_id": "customer_001",
+    "customer_name": "Rahul Sharma",
+    "customer_phone": "+919876543210",
+    "service_id": "service_001",
+    "service_name": "Men's Haircut",
+    "staff_id": "staff_001",
+    "staff_name": "Vikram Singh",
+    "date": "2024-02-20",
+    "start_time": "10:00",
+    "end_time": "10:30",
+    "duration": 30,
+    "base_price": 300,
+    "gst_amount": 15,
+    "total_price": 315,
+    "status": "confirmed",
+    "source": "online"
+  },
+  {
+    "id": "booking_002",
+    "salon_id": "salon_001",
+    "customer_id": "customer_002",
+    "customer_name": "Priya Patel",
+    "customer_phone": "+919876543211",
+    "service_id": "service_003",
+    "service_name": "Keratin Treatment",
+    "staff_id": "staff_002",
+    "staff_name": "Anjali Verma",
+    "date": "2024-02-20",
+    "start_time": "11:00",
+    "end_time": "13:00",
+    "duration": 120,
+    "base_price": 5000,
+    "gst_amount": 250,
+    "total_price": 5250,
+    "status": "booked",
+    "source": "whatsapp"
+  }
+]

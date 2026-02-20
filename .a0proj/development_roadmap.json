@@ -1,0 +1,100 @@
+{
+  "project": "Salon Flow - AI-Powered Salon Management SaaS",
+  "version": "0.2.0",
+  "last_updated": "2026-02-20",
+  "phases": [
+    {
+      "id": "phase-1",
+      "name": "Backend Core Development",
+      "status": "completed",
+      "tasks": [
+        {"id": "BE-001", "name": "Data Models & Schemas", "status": "completed"},
+        {"id": "BE-002", "name": "Authentication System", "status": "completed"},
+        {"id": "BE-003", "name": "Tenant Management", "status": "completed"},
+        {"id": "BE-004", "name": "Customer Management", "status": "completed"},
+        {"id": "BE-005", "name": "Service Catalog", "status": "completed"},
+        {"id": "BE-006", "name": "Staff Management", "status": "completed"},
+        {"id": "BE-007", "name": "Booking System", "status": "completed"},
+        {"id": "BE-008", "name": "Payment Processing", "status": "completed"}
+      ]
+    },
+    {
+      "id": "phase-2",
+      "name": "AI Integration",
+      "status": "in_progress",
+      "tasks": [
+        {
+          "id": "AI-001",
+          "name": "OpenRouter Integration",
+          "status": "completed",
+          "description": "Connect to Gemini models via OpenRouter",
+          "completed_at": "2026-02-20",
+          "files": [
+            "services/ai/app/services/openrouter_client.py",
+            "services/ai/app/services/cache_service.py",
+            "services/ai/app/services/agents.py",
+            "services/ai/app/api/chat.py",
+            "services/ai/app/api/marketing.py",
+            "services/ai/app/api/analytics.py"
+          ],
+          "endpoints": [
+            "POST /api/v1/chat - AI chat with session management",
+            "POST /api/v1/chat/booking/suggest - Booking suggestions",
+            "POST /api/v1/chat/booking/recommend-stylist - Stylist recommendations",
+            "POST /api/v1/marketing/campaign - Campaign generation",
+            "POST /api/v1/marketing/birthday-offer - Birthday offers",
+            "POST /api/v1/marketing/rebooking-reminder - Rebooking reminders",
+            "POST /api/v1/analytics - Business analytics",
+            "GET /api/v1/analytics/insights/{salon_id} - AI insights",
+            "POST /api/v1/analytics/complaint - Complaint handling"
+          ],
+          "agents": ["booking", "marketing", "analytics", "support"]
+        },
+        {
+          "id": "AI-002",
+          "name": "Booking Assistant",
+          "status": "pending",
+          "description": "AI-powered booking recommendations"
+        },
+        {
+          "id": "AI-003",
+          "name": "Marketing Automation",
+          "status": "pending",
+          "description": "Automated WhatsApp campaigns"
+        }
+      ]
+    },
+    {
+      "id": "phase-3",
+      "name": "Notification Service",
+      "status": "pending",
+      "tasks": [
+        {"id": "NT-001", "name": "Twilio WhatsApp Integration", "status": "pending"},
+        {"id": "NT-002", "name": "Reminder System", "status": "pending"}
+      ]
+    },
+    {
+      "id": "phase-4",
+      "name": "Frontend PWA Development",
+      "status": "pending",
+      "tasks": [
+        {"id": "FE-001", "name": "Owner PWA", "status": "pending"},
+        {"id": "FE-002", "name": "Manager PWA", "status": "pending"},
+        {"id": "FE-003", "name": "Staff PWA", "status": "pending"},
+        {"id": "FE-004", "name": "Client PWA", "status": "pending"}
+      ]
+    }
+  ],
+  "business_rules": {
+    "gst_rate": 5.0,
+    "loyalty_rate": 0.1,
+    "loyalty_expiry_months": 12,
+    "membership_renewal_days": 15,
+    "late_arrival_grace_minutes": 15
+  },
+  "salon_layout": {
+    "mens_chairs": 6,
+    "womens_chairs": 4,
+    "service_rooms": 4
+  }
+}

@@ -1,0 +1,68 @@
+name: Lint
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint-python:
+    name: Python Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install linters
+        run: |
+          pip install black isort ruff mypy
+      
+      - name: Run Black
+        run: black --check services/
+      
+      - name: Run isort
+        run: isort --check-only services/
+      
+      - name: Run Ruff
+        run: ruff check services/
+      
+      - name: Run MyPy
+        run: mypy services/ --ignore-missing-imports
+
+  lint-frontend:
+    name: Frontend Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: |
+          cd apps/client && npm ci
+          cd ../staff && npm ci
+          cd ../manager && npm ci
+          cd ../owner && npm ci
+      
+      - name: Run ESLint
+        run: |
+          cd apps/client && npm run lint
+          cd ../staff && npm run lint
+          cd ../manager && npm run lint
+          cd ../owner && npm run lint
+      
+      - name: Run Prettier
+        run: |
+          npx prettier --check "apps/**/*.{ts,tsx,css}"

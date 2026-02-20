@@ -1,183 +1,78 @@
 {
   "project_name": "Salon Flow",
-  "project_type": "AI-Powered Salon Management SaaS",
-  "version": "1.0.0",
-  "created": "2026-02-19",
+  "project_type": "AI-powered Salon Management SaaS",
+  "version": "0.1.0",
+  "status": "development",
+  "current_phase": "backend_development",
+  
   "business_context": {
-    "salon_name": "Jawed Habib Hair & Beauty Salon",
-    "location": "Kurnool, India",
-    "type": "Franchise",
-    "existing_crm": "ReSpark",
-    "customers": 3230,
-    "monthly_orders": 4948,
-    "members": 316
+    "client": "Jawed Habib Hair & Beauty Salon",
+    "location": "Kurnool, Andhra Pradesh, India",
+    "franchise_type": "Jawed Habib Franchise",
+    "replacing_system": "ReSpark",
+    "monthly_budget_target": 15000,
+    "optimized_cost": "₹3,000-5,000/month"
   },
-  "budget": {
-    "max_monthly_cost_inr": 15000,
-    "target_monthly_cost_inr": 3000,
-    "achieved_monthly_cost_inr": 5000
-  },
-  "tech_stack": {
-    "frontend": {
-      "framework": "React 18 + TypeScript",
-      "build_tool": "Vite",
-      "ui_library": "shadcn/ui",
-      "state_management": "Zustand",
-      "pwa": "Workbox"
-    },
+  
+  "technical_stack": {
     "backend": {
       "framework": "FastAPI (Python 3.11)",
-      "database": "Firestore",
-      "auth": "Firebase Auth",
-      "cache": "In-memory + Firestore"
+      "database": "Firestore (Native mode)",
+      "cache": "Redis",
+      "auth": "Firebase Authentication",
+      "ai": "OpenRouter (Gemini 3 Flash/Pro)"
     },
-    "ai": {
-      "framework": "Google ADK + MCP",
-      "chat_model": "google/gemini-3-flash",
-      "marketing_model": "google/gemini-3-pro-image-preview",
-      "provider": "OpenRouter"
+    "frontend": {
+      "framework": "React 18 + TypeScript",
+      "build": "Vite",
+      "styling": "Tailwind CSS + shadcn/ui",
+      "state": "Zustand + React Query",
+      "pwa": "Workbox"
     },
-    "cloud": {
-      "provider": "Google Cloud Platform",
-      "compute": "Cloud Run",
-      "events": "Pub/Sub + Eventarc",
-      "storage": "Cloud Storage + CDN"
-    },
-    "communication": {
-      "whatsapp": "Twilio API",
-      "voice": "Twilio Voice"
+    "infrastructure": {
+      "hosting": "GCP Cloud Run",
+      "messaging": "Cloud Pub/Sub",
+      "communication": "Twilio (WhatsApp/Voice)",
+      "ci_cd": "GitHub Actions"
     }
   },
-  "applications": {
-    "owner_pwa": {
-      "purpose": "Business owner dashboard",
-      "features": [
-        "Analytics",
-        "Multi-location",
-        "Financial reports",
-        "Franchise compliance"
-      ]
-    },
-    "manager_pwa": {
-      "purpose": "Operations management",
-      "features": [
-        "Real-time ops",
-        "Staff management",
-        "Issue resolution",
-        "Inventory"
-      ]
-    },
-    "staff_pwa": {
-      "purpose": "Service delivery",
-      "features": [
-        "Schedule",
-        "Service delivery",
-        "Upsell",
-        "Availability"
-      ]
-    },
-    "client_pwa": {
-      "purpose": "Customer booking",
-      "features": [
-        "Conversational UI",
-        "Booking",
-        "History",
-        "Loyalty"
-      ]
+  
+  "data_models": {
+    "core_entities": [
+      "Salon", "Tenant", "User", "Staff", "Customer", 
+      "Service", "Booking", "Payment", "Membership", "LoyaltyTransaction",
+      "Layout", "Resource", "Shift", "Leave"
+    ],
+    "salon_layout": {
+      "mens_chairs": 6,
+      "womens_chairs": 4,
+      "service_rooms": 4
     }
   },
-  "agents": {
-    "count": 7,
-    "list": [
-      "solutions_architect",
-      "frontend_developer",
-      "backend_developer",
-      "ai_engineer",
-      "devops_engineer",
-      "qa_engineer",
-      "data_engineer"
-    ]
-  },
-  "skills": {
-    "count": 27,
-    "categories": {
-      "architecture": [
-        "gcp_architecture",
-        "terraform_iac",
-        "api_design",
-        "cost_optimization"
-      ],
-      "frontend": [
-        "react_pwa",
-        "conversational_ui",
-        "offline_first",
-        "state_management"
-      ],
-      "backend": [
-        "fastapi_development",
-        "firestore_design",
-        "multi_tenant",
-        "event_driven"
-      ],
-      "ai": [
-        "ai_agent_development",
-        "llm_integration",
-        "prompt_engineering",
-        "ai_caching"
-      ],
-      "devops": [
-        "cicd_pipeline",
-        "cloud_deployment",
-        "monitoring"
-      ],
-      "qa": [
-        "automated_testing",
-        "e2e_testing",
-        "performance_testing",
-        "security_testing"
-      ],
-      "data": [
-        "data_migration",
-        "analytics_pipeline",
-        "reporting",
-        "data_quality"
-      ]
+  
+  "business_rules": {
+    "gst_rate": 5,
+    "loyalty_rate": "1 point per ₹10",
+    "loyalty_expiry_months": 12,
+    "membership_renewal_days": 15,
+    "late_arrival_grace_minutes": 15,
+    "operating_hours": {
+      "weekday": {"open": "09:00", "close": "21:00"},
+      "weekend": {"open": "09:00", "close": "22:00"}
     }
   },
-  "implementation": {
-    "total_weeks": 20,
-    "phases": [
-      {
-        "phase": 1,
-        "weeks": "1-4",
-        "focus": "Foundation"
-      },
-      {
-        "phase": 2,
-        "weeks": "5-8",
-        "focus": "AI Integration"
-      },
-      {
-        "phase": 3,
-        "weeks": "9-12",
-        "focus": "PWAs"
-      },
-      {
-        "phase": 4,
-        "weeks": "13-16",
-        "focus": "Advanced Features"
-      },
-      {
-        "phase": 5,
-        "weeks": "17-20",
-        "focus": "Launch"
-      }
-    ]
+  
+  "development_workflow": {
+    "approach": "Backend-first",
+    "testing_strategy": "TDD with pytest",
+    "code_quality": "pre-commit hooks + CI/CD",
+    "deployment": "Docker + GCP Cloud Run"
   },
-  "secrets": {
-    "openrouter_api_key": "configured",
-    "github_token": "configured",
-    "twilio_credentials": "pending",
-    "gcp_credentials": "pending"
+  
+  "agents_assigned": {
+    "backend_developer": ["BE-001", "BE-002", "BE-003", "BE-004", "BE-005", "BE-006", "BE-007", "BE-008"],
+    "ai_engineer": ["AI-001", "AI-002", "AI-003"],
+    "qa_engineer": ["QA-001", "QA-002"],
+    "frontend_developer": ["FE-001", "FE-002", "FE-003", "FE-004"]
   }
 }

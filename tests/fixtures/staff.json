@@ -1,0 +1,35 @@
+[
+  {
+    "id": "staff_001",
+    "salon_id": "salon_001",
+    "name": "Vikram Singh",
+    "phone": "+919876543220",
+    "email": "vikram@salon.com",
+    "role": "senior_stylist",
+    "skills": ["Haircuts", "Hair Color", "Hair Treatment"],
+    "expertise_level": "senior",
+    "active": true
+  },
+  {
+    "id": "staff_002",
+    "salon_id": "salon_001",
+    "name": "Anjali Verma",
+    "phone": "+919876543221",
+    "email": "anjali@salon.com",
+    "role": "colorist",
+    "skills": ["Hair Color", "Hair Treatment", "Facial & Skincare"],
+    "expertise_level": "expert",
+    "active": true
+  },
+  {
+    "id": "staff_003",
+    "salon_id": "salon_001",
+    "name": "Ravi Kumar",
+    "phone": "+919876543222",
+    "email": "ravi@salon.com",
+    "role": "stylist",
+    "skills": ["Haircuts"],
+    "expertise_level": "junior",
+    "active": true
+  }
+]

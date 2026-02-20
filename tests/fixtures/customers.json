@@ -1,0 +1,48 @@
+[
+  {
+    "id": "customer_001",
+    "salon_id": "salon_001",
+    "name": "Rahul Sharma",
+    "phone": "+919876543210",
+    "email": "rahul.sharma@email.com",
+    "gender": "male",
+    "loyalty_points": 150,
+    "total_visits": 12,
+    "total_spent": 25000,
+    "membership": {
+      "active": true,
+      "type": "gold",
+      "expiry": "2024-12-31"
+    }
+  },
+  {
+    "id": "customer_002",
+    "salon_id": "salon_001",
+    "name": "Priya Patel",
+    "phone": "+919876543211",
+    "email": "priya.patel@email.com",
+    "gender": "female",
+    "loyalty_points": 320,
+    "total_visits": 25,
+    "total_spent": 55000,
+    "membership": {
+      "active": true,
+      "type": "platinum",
+      "expiry": "2024-06-30"
+    }
+  },
+  {
+    "id": "customer_003",
+    "salon_id": "salon_001",
+    "name": "Amit Kumar",
+    "phone": "+919876543212",
+    "email": "amit.kumar@email.com",
+    "gender": "male",
+    "loyalty_points": 50,
+    "total_visits": 5,
+    "total_spent": 8000,
+    "membership": {
+      "active": false
+    }
+  }
+]

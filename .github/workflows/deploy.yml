@@ -1,0 +1,163 @@
+name: Deploy to GCP
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_REGION: asia-south1
+  IMAGE_REGISTRY: gcr.io
+
+jobs:
+  # ===========================================
+  # Build & Push Images
+  # ===========================================
+  build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.meta.outputs.tags }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker gcr.io
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Extract metadata
+        id: meta
+        run: |
+          echo "tags=$(date +%Y%m%d)-${{ github.sha }}" >> $GITHUB_OUTPUT
+      
+      # API Service
+      - name: Build & Push API Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/api
+          push: true
+          tags: |
+            ${{ env.IMAGE_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/salon-api:${{ steps.meta.outputs.tags }}
+            ${{ env.IMAGE_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/salon-api:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      # AI Service
+      - name: Build & Push AI Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/ai
+          push: true
+          tags: |
+            ${{ env.IMAGE_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/salon-ai:${{ steps.meta.outputs.tags }}
+            ${{ env.IMAGE_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/salon-ai:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      
+      # Notification Service
+      - name: Build & Push Notification Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./services/notification
+          push: true
+          tags: |
+            ${{ env.IMAGE_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/salon-notification:${{ steps.meta.outputs.tags }}
+            ${{ env.IMAGE_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/salon-notification:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ===========================================
+  # Deploy to Cloud Run
+  # ===========================================
+  deploy:
+    name: Deploy to Cloud Run
+    runs-on: ubuntu-latest
+    needs: build
+    environment: ${{ github.event.inputs.environment || 'staging' }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      
+      - name: Deploy API Service
+        run: |
+          gcloud run deploy salon-api \
+            --image ${{ env.IMAGE_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/salon-api:latest \
+            --region ${{ env.GCP_REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars ENVIRONMENT=${{ github.event.inputs.environment || 'staging' }} \
+            --set-secrets OPENROUTER_API_KEY=openrouter-api-key:latest \
+            --min-instances 0 \
+            --max-instances 10 \
+            --memory 512Mi \
+            --cpu 1
+      
+      - name: Deploy AI Service
+        run: |
+          gcloud run deploy salon-ai \
+            --image ${{ env.IMAGE_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/salon-ai:latest \
+            --region ${{ env.GCP_REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars ENVIRONMENT=${{ github.event.inputs.environment || 'staging' }} \
+            --set-secrets OPENROUTER_API_KEY=openrouter-api-key:latest \
+            --min-instances 0 \
+            --max-instances 5 \
+            --memory 1Gi \
+            --cpu 1
+      
+      - name: Deploy Notification Service
+        run: |
+          gcloud run deploy salon-notification \
+            --image ${{ env.IMAGE_REGISTRY }}/${{ env.GCP_PROJECT_ID }}/salon-notification:latest \
+            --region ${{ env.GCP_REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --set-env-vars ENVIRONMENT=${{ github.event.inputs.environment || 'staging' }} \
+            --set-secrets TWILIO_ACCOUNT_SID=twilio-account-sid:latest,TWILIO_AUTH_TOKEN=twilio-auth-token:latest \
+            --min-instances 0 \
+            --max-instances 5 \
+            --memory 256Mi \
+            --cpu 1
+      
+      - name: Get Service URLs
+        id: urls
+        run: |
+          API_URL=$(gcloud run services describe salon-api --region ${{ env.GCP_REGION }} --format 'value(status.url)')
+          AI_URL=$(gcloud run services describe salon-ai --region ${{ env.GCP_REGION }} --format 'value(status.url)')
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+          echo "ai_url=$AI_URL" >> $GITHUB_OUTPUT
+      
+      - name: Output URLs
+        run: |
+          echo "### Deployed Services" >> $GITHUB_STEP_SUMMARY
+          echo "| Service | URL |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| API | ${{ steps.urls.outputs.api_url }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| AI | ${{ steps.urls.outputs.ai_url }} |" >> $GITHUB_STEP_SUMMARY

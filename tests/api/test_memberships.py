@@ -34,7 +34,7 @@ from app.schemas.base import StaffRole
 @pytest.fixture
 def app():
     """Create test FastAPI app."""
-    app = FastAPI()
+    app = FastAPI(redirect_slashes=False)
     app.include_router(router, prefix="/api/v1/memberships")
     return app
 
@@ -156,7 +156,7 @@ class TestMembershipList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/api/v1/memberships?status=active")
+                response = await client.get("/api/v1/memberships/?status=active")
         
         assert response.status_code == status.HTTP_200_OK
         
@@ -195,7 +195,7 @@ class TestMembershipCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/api/v1/memberships",
+                    "/api/v1/memberships/",
                     json={
                         "customer_id": "customer_001",
                         "plan_id": "plan_001",
@@ -234,7 +234,7 @@ class TestMembershipCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/api/v1/memberships",
+                    "/api/v1/memberships/",
                     json={
                         "customer_id": "customer_001",
                         "plan_id": "plan_001",
@@ -430,7 +430,7 @@ class TestMembershipEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/memberships",
+                "/api/v1/memberships/",
                 json={
                     "customer_id": "customer_001",
                     "plan_id": "plan_001",
@@ -455,7 +455,7 @@ class TestMembershipEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/memberships",
+                "/api/v1/memberships/",
                 json={
                     "customer_id": "customer_001",
                     "plan_id": "plan_001",

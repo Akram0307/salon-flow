@@ -1,0 +1,55 @@
+# Cloud Build configuration for Notification Service
+
+steps:
+  # Build the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'asia-south1-docker.pkg.dev/salon-saas-487508/salon-flow/notification-service:$COMMIT_SHA'
+      - '-t'
+      - 'asia-south1-docker.pkg.dev/salon-saas-487508/salon-flow/notification-service:latest'
+      - './services/notification'
+    dir: '.'
+
+  # Push the container image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '--all-tags'
+      - 'asia-south1-docker.pkg.dev/salon-saas-487508/salon-flow/notification-service'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'salon-flow-notification'
+      - '--image=asia-south1-docker.pkg.dev/salon-saas-487508/salon-flow/notification-service:$COMMIT_SHA'
+      - '--region=asia-south1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=8002'
+      - '--cpu=1'
+      - '--memory=512Mi'
+      - '--min-instances=0'
+      - '--max-instances=10'
+      - '--set-env-vars=GCP_PROJECT_ID=salon-saas-487508'
+      - '--set-secrets=
+          TWILIO_ACCOUNT_SID=twilio-account-sid:latest,
+          TWILIO_AUTH_TOKEN=twilio-auth-token:latest,
+          TWILIO_API_KEY_SID=twilio-api-key-sid:latest,
+          TWILIO_API_KEY_SECRET=twilio-api-key-secret:latest'
+      - '--service-account=super-agent-zero@salon-saas-487508.iam.gserviceaccount.com'
+
+# Store images in Artifact Registry
+images:
+  - 'asia-south1-docker.pkg.dev/salon-saas-487508/salon-flow/notification-service:$COMMIT_SHA'
+  - 'asia-south1-docker.pkg.dev/salon-saas-487508/salon-flow/notification-service:latest'
+
+# Build options
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+# Timeout
+timeout: '600s'

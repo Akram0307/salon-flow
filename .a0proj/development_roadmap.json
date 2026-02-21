@@ -1,6 +1,6 @@
 {
   "project": "Salon Flow - AI-Powered Salon Management SaaS",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "last_updated": "2026-02-20",
   "phases": [
     {
@@ -25,9 +25,9 @@
       "tasks": [
         {
           "id": "AI-001",
-          "name": "OpenRouter Integration",
+          "name": "Core AI Agents (Booking, Marketing, Analytics, Support)",
           "status": "completed",
-          "description": "Connect to Gemini models via OpenRouter",
+          "description": "Initial 4 AI agents with OpenRouter integration",
           "completed_at": "2026-02-20",
           "files": [
             "services/ai/app/services/openrouter_client.py",
@@ -37,30 +37,85 @@
             "services/ai/app/api/marketing.py",
             "services/ai/app/api/analytics.py"
           ],
-          "endpoints": [
-            "POST /api/v1/chat - AI chat with session management",
-            "POST /api/v1/chat/booking/suggest - Booking suggestions",
-            "POST /api/v1/chat/booking/recommend-stylist - Stylist recommendations",
-            "POST /api/v1/marketing/campaign - Campaign generation",
-            "POST /api/v1/marketing/birthday-offer - Birthday offers",
-            "POST /api/v1/marketing/rebooking-reminder - Rebooking reminders",
-            "POST /api/v1/analytics - Business analytics",
-            "GET /api/v1/analytics/insights/{salon_id} - AI insights",
-            "POST /api/v1/analytics/complaint - Complaint handling"
-          ],
           "agents": ["booking", "marketing", "analytics", "support"]
         },
         {
           "id": "AI-002",
-          "name": "Booking Assistant",
-          "status": "pending",
-          "description": "AI-powered booking recommendations"
+          "name": "Smart Waitlist Manager Agent",
+          "status": "completed",
+          "description": "Auto-fills cancellations and no-shows with prioritized waitlist customers",
+          "completed_at": "2026-02-20",
+          "capabilities": [
+            "Monitor cancelled/released slots in real-time",
+            "Maintain prioritized waitlist (by loyalty tier, booking time)",
+            "Auto-notify waitlisted customers via WhatsApp/SMS",
+            "One-tap confirmation for quick booking",
+            "Escalation logic (notify next person if no response in 15 mins)"
+          ],
+          "files": [
+            "services/ai/app/services/agents.py",
+            "services/ai/app/api/agents_router.py",
+            "tests/ai/test_new_agents.py"
+          ],
+          "agent": "waitlist"
         },
         {
           "id": "AI-003",
-          "name": "Marketing Automation",
+          "name": "Real-Time Slot Optimizer Agent",
+          "status": "completed",
+          "description": "Detects and fills schedule gaps with targeted offers",
+          "completed_at": "2026-02-20",
+          "capabilities": [
+            "Monitor live booking data for empty slots",
+            "Identify gaps (30+ min idle time)",
+            "Trigger targeted offers to nearby customers",
+            "Suggest service combinations to fill gaps",
+            "Dynamic service duration adjustments"
+          ],
+          "files": [
+            "services/ai/app/services/agents.py",
+            "services/ai/app/api/agents_router.py",
+            "tests/ai/test_new_agents.py"
+          ],
+          "agent": "slot_optimizer"
+        },
+        {
+          "id": "AI-004",
+          "name": "Smart Upsell Engine Agent",
+          "status": "completed",
+          "description": "Maximizes booking value through intelligent suggestions",
+          "completed_at": "2026-02-20",
+          "capabilities": [
+            "Analyze customer history and preferences",
+            "Suggest add-ons during booking",
+            "Recommend service upgrades",
+            "Create personalized combo offers",
+            "Track upsell success rate"
+          ],
+          "files": [
+            "services/ai/app/services/agents.py",
+            "services/ai/app/api/agents_router.py",
+            "tests/ai/test_new_agents.py"
+          ],
+          "agent": "upsell"
+        },
+        {
+          "id": "AI-005",
+          "name": "WhatsApp Concierge Agent",
           "status": "pending",
-          "description": "Automated WhatsApp campaigns"
+          "description": "WhatsApp-based booking assistant (blocked: needs Twilio credentials)"
+        },
+        {
+          "id": "AI-006",
+          "name": "Dynamic Pricing Agent",
+          "status": "pending",
+          "description": "Real-time pricing optimization based on demand"
+        },
+        {
+          "id": "AI-007",
+          "name": "Service Bundle Creator Agent",
+          "status": "pending",
+          "description": "Intelligent service bundling and package creation"
         }
       ]
     },
@@ -85,6 +140,11 @@
       ]
     }
   ],
+  "ai_agents": {
+    "total": 7,
+    "active": ["booking", "marketing", "analytics", "support", "waitlist", "slot_optimizer", "upsell"],
+    "planned": ["whatsapp_concierge", "dynamic_pricing", "service_bundle", "inventory", "scheduling", "retention", "demand_predictor", "vip_priority", "personalization"]
+  },
   "business_rules": {
     "gst_rate": 5.0,
     "loyalty_rate": 0.1,

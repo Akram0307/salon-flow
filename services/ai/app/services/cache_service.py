@@ -1,11 +1,12 @@
 """Redis Cache Service for AI Responses
 
 Caches AI responses to reduce API calls and improve latency.
+Uses Upstash Redis REST API for serverless compatibility.
 """
 import json
 import hashlib
 from typing import Optional, Any, Dict
-import redis.asyncio as redis
+from upstash_redis import Redis
 import structlog
 
 from app.core.config import get_settings
@@ -15,27 +16,30 @@ settings = get_settings()
 
 
 class CacheService:
-    """Redis-based cache for AI responses"""
+    """Upstash Redis-based cache for AI responses"""
     
-    def __init__(self, redis_url: Optional[str] = None):
-        self.redis_url = redis_url or settings.redis_url
-        self._client: Optional[redis.Redis] = None
-        self._enabled = settings.enable_cache
+    def __init__(
+        self,
+        upstash_url: Optional[str] = None,
+        upstash_token: Optional[str] = None
+    ):
+        self.upstash_url = upstash_url or settings.upstash_redis_rest_url
+        self.upstash_token = upstash_token or settings.upstash_redis_rest_token
+        self._client: Optional[Redis] = None
+        self._enabled = settings.enable_cache and bool(self.upstash_url and self.upstash_token)
         
     async def _ensure_client(self):
         """Ensure Redis client is initialized"""
-        if self._client is None:
-            self._client = redis.from_url(
-                self.redis_url,
-                encoding="utf-8",
-                decode_responses=True
+        if self._client is None and self._enabled:
+            self._client = Redis(
+                url=self.upstash_url,
+                token=self.upstash_token,
             )
     
     async def close(self):
-        """Close Redis connection"""
-        if self._client:
-            await self._client.close()
-            self._client = None
+        """Close Redis connection (no-op for REST client)"""
+        # Upstash REST client doesn't maintain persistent connections
+        self._client = None
     
     def _generate_key(self, prefix: str, data: Any) -> str:
         """Generate cache key from data"""
@@ -50,7 +54,7 @@ class CacheService:
             
         try:
             await self._ensure_client()
-            value = await self._client.get(key)
+            value = self._client.get(key)
             if value:
                 logger.info("cache_hit", key=key)
             return value
@@ -65,7 +69,7 @@ class CacheService:
             
         try:
             await self._ensure_client()
-            await self._client.setex(
+            self._client.setex(
                 key,
                 ttl or settings.cache_ttl,
                 value
@@ -101,12 +105,18 @@ class CacheService:
         """Invalidate all keys matching pattern"""
         try:
             await self._ensure_client()
+            # Use SCAN to find matching keys
             keys = []
-            async for key in self._client.scan_iter(match=f"ai:{pattern}:*"):
-                keys.append(key)
+            cursor = 0
+            while True:
+                result = self._client.scan(cursor, match=f"ai:{pattern}:*")
+                cursor = result[0]
+                keys.extend(result[1])
+                if cursor == 0:
+                    break
             
             if keys:
-                deleted = await self._client.delete(*keys)
+                deleted = self._client.delete(*keys)
                 logger.info("cache_invalidated", pattern=pattern, count=deleted)
                 return deleted
             return 0

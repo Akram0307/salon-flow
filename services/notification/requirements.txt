@@ -1,8 +1,17 @@
-fastapi==0.109.0
-uvicorn[standard]==0.27.0
-pydantic==2.5.3
-pydantic-settings==2.1.0
-httpx==0.26.0
-redis==5.0.1
-twilio==8.11.0
-structlog==24.1.0
+# FastAPI and server
+fastapi>=0.109.0
+uvicorn[standard]>=0.27.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Twilio
+twilio>=8.11.0
+
+# Google Cloud
+google-cloud-secret-manager>=2.17.0
+
+# Logging
+structlog>=24.1.0
+
+# HTTP
+httpx>=0.26.0

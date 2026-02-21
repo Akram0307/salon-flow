@@ -27,6 +27,14 @@ class Settings(BaseSettings):
     FIRESTORE_EMULATOR_HOST: str = ""
     FIREBASE_AUTH_EMULATOR_HOST: str = ""
     
+    # GCP
+    GCP_PROJECT_ID: str = "salon-saas-487508"
+    PUBSUB_TOPIC: str = "salon-events"
+    
+    # AI Service
+    AI_SERVICE_URL: str = "http://localhost:8081"  # Default for local dev
+    AI_SERVICE_TIMEOUT: int = 60  # seconds
+    
     # Redis - Support both local and Upstash (serverless)
     # Upstash uses rediss:// (TLS) format
     REDIS_URL: str = "redis://localhost:6379"

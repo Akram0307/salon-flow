@@ -41,7 +41,7 @@ from app.schemas import (
 @pytest.fixture
 def app():
     """Create test FastAPI app."""
-    app = FastAPI()
+    app = FastAPI(redirect_slashes=False)
     app.include_router(router, prefix="/api/v1/customers")
     return app
 

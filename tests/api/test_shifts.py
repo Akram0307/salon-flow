@@ -33,7 +33,7 @@ from app.schemas.base import StaffRole
 @pytest.fixture
 def app():
     """Create test FastAPI app."""
-    app = FastAPI()
+    app = FastAPI(redirect_slashes=False)
     app.include_router(router, prefix="/api/v1/shifts")
     return app
 
@@ -140,7 +140,7 @@ class TestShiftList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/api/v1/shifts?shift_date=2024-01-15")
+                response = await client.get("/api/v1/shifts/?shift_date=2024-01-15")
         
         assert response.status_code == status.HTTP_200_OK
         
@@ -180,7 +180,7 @@ class TestShiftCreate:
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
                     response = await client.post(
-                        "/api/v1/shifts",
+                        "/api/v1/shifts/",
                         json={
                             "staff_id": "staff_001",
                             "shift_date": "2024-01-15",
@@ -222,7 +222,7 @@ class TestShiftCreate:
                 transport = ASGITransport(app=app)
                 async with AsyncClient(transport=transport, base_url="http://test") as client:
                     response = await client.post(
-                        "/api/v1/shifts",
+                        "/api/v1/shifts/",
                         json={
                             "staff_id": "staff_001",
                             "shift_date": "2024-01-15",
@@ -374,7 +374,7 @@ class TestShiftEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/shifts",
+                "/api/v1/shifts/",
                 json={
                     "staff_id": "staff_001",
                     "shift_date": "2024-01-15",
@@ -398,7 +398,7 @@ class TestShiftEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/shifts",
+                "/api/v1/shifts/",
                 json={
                     "staff_id": "staff_001",
                     "shift_date": "2024-01-15",

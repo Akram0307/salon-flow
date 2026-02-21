@@ -234,4 +234,4 @@ class TestAPIEndpoints:
         assert response.status_code == 200
         data = response.json()
         assert "agents" in data
-        assert len(data["agents"]) == 4
+        assert len(data["agents"]) == 25

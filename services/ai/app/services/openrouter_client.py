@@ -30,7 +30,7 @@ class OpenRouterResponse(BaseModel):
     id: str
     model: str
     choices: List[Dict[str, Any]]
-    usage: Dict[str, int]
+    usage: Dict[str, Any]  # Changed to Dict to handle various formats
     
     @property
     def content(self) -> str:

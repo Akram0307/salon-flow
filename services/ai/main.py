@@ -2,8 +2,9 @@
 Salon Flow - AI Agent Service
 AI-powered features: Chat, Marketing, Analytics
 
-Uses OpenRouter for Gemini model access with Redis caching.
+Uses OpenRouter for Gemini model access with Upstash Redis caching.
 """
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +12,7 @@ import structlog
 
 from app.core.config import get_settings
 from app.core.logging import configure_logging
-from app.api import chat, marketing, analytics
+from app.api import chat, marketing, analytics, agents_router
 from app.services.openrouter_client import get_openrouter_client
 from app.services.cache_service import get_cache_service
 
@@ -35,9 +36,9 @@ async def lifespan(app: FastAPI):
     
     try:
         cache = await get_cache_service()
-        logger.info("redis_connected", url=settings.redis_url)
+        logger.info("upstash_redis_connected", enabled=cache._enabled)
     except Exception as e:
-        logger.warning("redis_connection_failed", error=str(e))
+        logger.warning("upstash_redis_connection_failed", error=str(e))
     
     yield
     
@@ -70,6 +71,7 @@ app.add_middleware(
 app.include_router(chat.router, prefix="/api/v1")
 app.include_router(marketing.router, prefix="/api/v1")
 app.include_router(analytics.router, prefix="/api/v1")
+app.include_router(agents_router.router, prefix="/api/v1")
 
 
 @app.get("/health")
@@ -87,11 +89,16 @@ async def health_check():
     except Exception as e:
         openrouter_status = f"error: {str(e)[:50]}"
     
-    # Check Redis
+    # Check Upstash Redis
     try:
         cache = await get_cache_service()
-        if cache._client:
-            await cache._client.ping()
+        if cache._enabled and cache._client:
+            # Test with a simple get operation
+            cache._client.get("__health_check__")
+        elif not cache._enabled:
+            redis_status = "disabled"
+        else:
+            redis_status = "not_configured"
     except Exception as e:
         redis_status = f"error: {str(e)[:50]}"
     
@@ -160,9 +167,11 @@ async def generate_text(
 
 if __name__ == "__main__":
     import uvicorn
+    # Use PORT environment variable for Cloud Run compatibility
+    port = int(os.environ.get("PORT", 8001))
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8001,
+        port=port,
         reload=settings.debug,
     )

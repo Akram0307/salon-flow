@@ -37,7 +37,7 @@ from app.schemas.base import StaffRole, StaffStatus, Gender, ExpertiseLevel, Sal
 @pytest.fixture
 def app():
     """Create test FastAPI app."""
-    app = FastAPI()
+    app = FastAPI(redirect_slashes=False)
     app.include_router(router, prefix="/api/v1/staff")
     return app
 
@@ -185,7 +185,7 @@ class TestStaffList:
             
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/api/v1/staff?role=stylist")
+                response = await client.get("/api/v1/staff/?role=stylist")
         
         assert response.status_code == status.HTTP_200_OK
         
@@ -217,7 +217,7 @@ class TestStaffCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/api/v1/staff",
+                    "/api/v1/staff/",
                     json={
                         "name": "John Doe",
                         "phone": "+1234567890",
@@ -249,7 +249,7 @@ class TestStaffCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/api/v1/staff",
+                    "/api/v1/staff/",
                     json={
                         "name": "John Doe",
                         "phone": "+1234567890",
@@ -399,7 +399,7 @@ class TestStaffEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/staff",
+                "/api/v1/staff/",
                 json={
                     "name": "",  # Empty name
                     "phone": "+1234567890",
@@ -421,7 +421,7 @@ class TestStaffEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/staff",
+                "/api/v1/staff/",
                 json={
                     "name": "John Doe",
                     "phone": "invalid",  # Invalid phone

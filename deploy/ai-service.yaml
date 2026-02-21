@@ -1,0 +1,90 @@
+# =============================================================================
+# Salon Flow AI Service - Cloud Run Service Configuration
+# =============================================================================
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: salon-flow-ai
+  labels:
+    app: salon-flow
+    component: ai
+    environment: production
+  annotations:
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+spec:
+  template:
+    metadata:
+      labels:
+        app: salon-flow
+        component: ai
+      annotations:
+        autoscaling.knative.dev/minScale: '0'
+        autoscaling.knative.dev/maxScale: '5'
+        autoscaling.knative.dev/target: '80'
+        run.googleapis.com/cpu-throttling: 'false'
+        run.googleapis.com/memory: '512Mi'
+        run.googleapis.com/cpu: '1'
+        run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/startup-cpu-boost: 'true'
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      serviceAccountName: salon-saas-487508@appspot.gserviceaccount.com
+      containers:
+        - name: ai
+          image: asia-south1-docker.pkg.dev/salon-saas-487508/salon-flow-images/salon-flow-ai:latest
+          ports:
+            - name: http1
+              containerPort: 8001
+          env:
+            - name: ENVIRONMENT
+              value: production
+            - name: PORT
+              value: '8001'
+            - name: PYTHONUNBUFFERED
+              value: '1'
+            - name: OPENROUTER_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openrouter-api-key
+                  key: latest
+            - name: UPSTASH_REDIS_REST_URL
+              valueFrom:
+                secretKeyRef:
+                  name: upstash-redis-url
+                  key: latest
+            - name: UPSTASH_REDIS_REST_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: upstash-redis-token
+                  key: latest
+            - name: API_SERVICE_URL
+              value: 'https://salon-flow-api-rgvcleapsa-el.a.run.app'
+          resources:
+            limits:
+              memory: '512Mi'
+              cpu: '1000m'
+            requests:
+              memory: '256Mi'
+              cpu: '500m'
+          startupProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            timeoutSeconds: 3
+            failureThreshold: 3
+  traffic:
+    - percent: 100
+      latestRevision: true

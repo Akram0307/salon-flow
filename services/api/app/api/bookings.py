@@ -26,6 +26,7 @@ from app.api.dependencies import (
     verify_booking_access,
 )
 from app.models import BookingModel, ServiceModel, StaffModel, CustomerModel
+from app.services.event_publisher import publish_event, EventTypes
 from app.schemas import (
     BookingCreate,
     BookingUpdate,
@@ -291,6 +292,24 @@ async def create_booking(
         logger.info(
             "Booking created",
             booking_id=booking.id,
+        )
+        
+        # Publish booking created event
+        publish_event(
+            event_type=EventTypes.BOOKING_CREATED,
+            data={
+                "booking_id": booking.id,
+                "customer_id": request.customer_id,
+                "service_id": request.service_id,
+                "staff_id": request.staff_id,
+                "start_time": request.start_time.isoformat(),
+                "status": "pending",
+            },
+            salon_id=salon_id,
+        )
+        logger.info(
+            "Booking created event published",
+            booking_id=booking.id,
             salon_id=salon_id,
             service_id=request.service_id,
             created_by=current_user.uid,
@@ -547,6 +566,23 @@ async def update_booking(
         logger.info(
             "Booking updated",
             booking_id=booking_id,
+        )
+        
+        # Publish booking updated event
+        publish_event(
+            event_type=EventTypes.BOOKING_UPDATED,
+            data={
+                "booking_id": booking_id,
+                "customer_id": updated.customer_id if hasattr(updated, 'customer_id') else None,
+                "staff_id": updated.staff_id if hasattr(updated, 'staff_id') else None,
+                "start_time": updated.start_time.isoformat() if hasattr(updated, 'start_time') else None,
+                "status": str(updated.status) if hasattr(updated, 'status') else "updated",
+            },
+            salon_id=salon_id,
+        )
+        logger.info(
+            "Booking updated event published",
+            booking_id=booking_id,
             updated_by=current_user.uid,
         )
         
@@ -607,6 +643,24 @@ async def cancel_booking(
         
         logger.info(
             "Booking cancelled",
+            booking_id=booking_id,
+        )
+        
+        # Publish booking cancelled event
+        publish_event(
+            event_type=EventTypes.BOOKING_CANCELLED,
+            data={
+                "booking_id": booking_id,
+                "customer_id": existing.customer_id if hasattr(existing, 'customer_id') else None,
+                "staff_id": existing.staff_id if hasattr(existing, 'staff_id') else None,
+                "start_time": existing.start_time.isoformat() if hasattr(existing, 'start_time') else None,
+                "status": "cancelled",
+                "reason": reason,
+            },
+            salon_id=salon_id,
+        )
+        logger.info(
+            "Booking cancelled event published",
             booking_id=booking_id,
             cancelled_by=current_user.uid,
             reason=reason,
@@ -670,6 +724,21 @@ async def check_in_customer(
         
         logger.info(
             "Customer checked in",
+            booking_id=booking.id,
+        )
+        
+        # Publish booking checked_in event
+        publish_event(
+            event_type=EventTypes.BOOKING_UPDATED,
+            data={
+                "booking_id": booking_id,
+                "status": "checked_in",
+                "checked_in_by": current_user.uid,
+            },
+            salon_id=salon_id,
+        )
+        logger.info(
+            "Booking checked_in event published",
             booking_id=booking_id,
             checked_in_by=current_user.uid,
         )
@@ -734,6 +803,21 @@ async def start_service(
         
         logger.info(
             "Service started",
+            booking_id=booking.id,
+        )
+        
+        # Publish booking started event
+        publish_event(
+            event_type=EventTypes.BOOKING_UPDATED,
+            data={
+                "booking_id": booking_id,
+                "status": "in_progress",
+                "started_by": current_user.uid,
+            },
+            salon_id=salon_id,
+        )
+        logger.info(
+            "Booking started event published",
             booking_id=booking_id,
             started_by=current_user.uid,
         )
@@ -805,6 +889,23 @@ async def complete_service(
         
         logger.info(
             "Service completed",
+            booking_id=booking.id,
+        )
+        
+        # Publish booking completed event
+        publish_event(
+            event_type=EventTypes.BOOKING_COMPLETED,
+            data={
+                "booking_id": booking_id,
+                "status": "completed",
+                "completed_by": current_user.uid,
+                "rating": request.rating,
+                "feedback": request.customer_feedback,
+            },
+            salon_id=salon_id,
+        )
+        logger.info(
+            "Booking completed event published",
             booking_id=booking_id,
             completed_by=current_user.uid,
             rating=request.rating,
@@ -873,6 +974,22 @@ async def add_upsell_service(
         
         logger.info(
             "Upsell added",
+            booking_id=booking.id,
+        )
+        
+        # Publish booking upsell event
+        publish_event(
+            event_type=EventTypes.BOOKING_UPDATED,
+            data={
+                "booking_id": booking_id,
+                "upsell_service_id": request.service_id,
+                "upsell_staff_id": request.staff_id,
+                "added_by": current_user.uid,
+            },
+            salon_id=salon_id,
+        )
+        logger.info(
+            "Booking upsell event published",
             booking_id=booking_id,
             service_id=request.service_id,
             added_by=current_user.uid,

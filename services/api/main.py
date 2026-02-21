@@ -27,7 +27,9 @@ from app.api import (
     memberships_router,
     resources_router,
     shifts_router,
+    integrations_router,
 )
+from app.api.ai_proxy import router as ai_router
 
 logger = structlog.get_logger()
 
@@ -45,7 +47,7 @@ async def lifespan(app: FastAPI):
     # Connect to Redis with connection pooling
     try:
         await redis_client.connect()
-        logger.info("Redis connected with connection pool", 
+        logger.info("Redis connected with connection pool",
                    max_connections=redis_client.pool_settings["max_connections"])
     except Exception as e:
         logger.warning("Redis connection failed - running without cache", error=str(e))
@@ -77,7 +79,8 @@ app = FastAPI(
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
-    openapi_url="/openapi.json"
+    openapi_url="/openapi.json",
+    redirect_slashes=False  # Accept both with and without trailing slashes
 )
 
 # ============================================================================
@@ -133,6 +136,10 @@ app.include_router(payments_router, prefix="/api/v1/payments", tags=["Payments"]
 app.include_router(memberships_router, prefix="/api/v1/memberships", tags=["Memberships"])
 app.include_router(resources_router, prefix="/api/v1/resources", tags=["Resources"])
 app.include_router(shifts_router, prefix="/api/v1/shifts", tags=["Shifts"])
+app.include_router(integrations_router, prefix="/api/v1/integrations", tags=["Integrations"])
+
+# AI Service Proxy Routes
+app.include_router(ai_router, prefix="/api/v1", tags=["AI Service"])
 
 
 @app.get("/health")
@@ -171,7 +178,9 @@ async def root():
             "payments": "/api/v1/payments",
             "memberships": "/api/v1/memberships",
             "resources": "/api/v1/resources",
-            "shifts": "/api/v1/shifts"
+            "shifts": "/api/v1/shifts",
+            "integrations": "/api/v1/integrations",
+            "ai": "/api/v1/ai"
         }
     }
 
@@ -179,8 +188,8 @@ async def root():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
-        app, 
-        host="0.0.0.0", 
+        app,
+        host="0.0.0.0",
         port=8000,
         log_config=None,  # Use structlog
     )

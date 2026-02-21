@@ -37,7 +37,7 @@ from app.schemas import Salon, SalonLayout, SalonSettings, SalonSubscription
 @pytest.fixture
 def app():
     """Create a test FastAPI app."""
-    app = FastAPI()
+    app = FastAPI(redirect_slashes=False)
     app.include_router(router, prefix="/api/v1/tenants")
     return app
 
@@ -136,7 +136,7 @@ class TestSalonEndpoints:
         
         with patch('app.api.tenants.SalonModel', return_value=mock_model):
             response = client.post(
-                "/api/v1/tenants",
+                "/api/v1/tenants/",
                 json={
                     "name": "Jawed Habib Kurnool",
                     "phone": "+919876543210",

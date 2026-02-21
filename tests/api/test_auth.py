@@ -47,7 +47,7 @@ from app.schemas.base import StaffRole
 @pytest.fixture
 def app():
     """Create FastAPI app with auth router."""
-    app = FastAPI()
+    app = FastAPI(redirect_slashes=False)
     app.include_router(router, prefix="/api/v1/auth")
     return app
 

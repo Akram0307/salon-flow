@@ -1,4 +1,4 @@
-"""Business services for Salon Flow API."""
-from app.services.auth_service import AuthService
+"""Services package"""
+from app.services.event_publisher import EventPublisher, publish_event
 
-__all__ = ["AuthService"]
+__all__ = ["EventPublisher", "publish_event"]

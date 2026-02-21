@@ -34,7 +34,7 @@ from app.schemas.staff import Staff, StaffSkills, ServiceSkill, ExpertiseLevel
 @pytest.fixture
 def app():
     """Create test FastAPI app."""
-    app = FastAPI()
+    app = FastAPI(redirect_slashes=False)
     app.include_router(router, prefix="/api/v1/bookings")
     return app
 
@@ -188,7 +188,7 @@ class TestBookingList:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/api/v1/bookings?date_filter=2024-01-15")
+                response = await client.get("/api/v1/bookings/?date_filter=2024-01-15")
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -234,7 +234,7 @@ class TestBookingCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/api/v1/bookings",
+                    "/api/v1/bookings/",
                     json={
                         "salon_id": "salon_001",
                         "customer_id": "customer_001",
@@ -281,7 +281,7 @@ class TestBookingCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/api/v1/bookings",
+                    "/api/v1/bookings/",
                     json={
                         "salon_id": "salon_001",
                         "customer_id": "customer_001",

@@ -35,7 +35,7 @@ from app.schemas.base import StaffRole, ServiceCategory, ResourceType
 @pytest.fixture
 def app():
     """Create test FastAPI app."""
-    app = FastAPI()
+    app = FastAPI(redirect_slashes=False)
     app.include_router(router, prefix="/api/v1/services")
     return app
 
@@ -158,7 +158,7 @@ class TestServiceList:
 
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
-                response = await client.get("/api/v1/services?category=haircut")
+                response = await client.get("/api/v1/services/?category=haircut")
 
         assert response.status_code == status.HTTP_200_OK
 
@@ -190,7 +190,7 @@ class TestServiceCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/api/v1/services",
+                    "/api/v1/services/",
                     json={
                         "name": "Haircut",
                         "description": "Professional haircut service",
@@ -233,7 +233,7 @@ class TestServiceCreate:
             transport = ASGITransport(app=app)
             async with AsyncClient(transport=transport, base_url="http://test") as client:
                 response = await client.post(
-                    "/api/v1/services",
+                    "/api/v1/services/",
                     json={
                         "name": "Haircut",
                         "description": "Professional haircut service",
@@ -446,7 +446,7 @@ class TestServiceEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/services",
+                "/api/v1/services/",
                 json={
                     "name": "Haircut",
                     "description": "Professional haircut service",
@@ -477,7 +477,7 @@ class TestServiceEdgeCases:
         transport = ASGITransport(app=app)
         async with AsyncClient(transport=transport, base_url="http://test") as client:
             response = await client.post(
-                "/api/v1/services",
+                "/api/v1/services/",
                 json={
                     "name": "Haircut",
                     "description": "Professional haircut service",

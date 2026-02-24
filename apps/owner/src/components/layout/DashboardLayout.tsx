@@ -14,6 +14,7 @@ import type { BaseComponentProps } from '../../types/design-system';
 // Dashboard Layout Types
 // ============================================
 export interface DashboardLayoutProps extends BaseComponentProps {
+  children?: React.ReactNode;
   title?: string;
   subtitle?: string;
   user?: {

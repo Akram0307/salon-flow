@@ -259,180 +259,56 @@ class TestWebAdapter:
 
 
 class TestWhatsAppAdapter:
-    """Test the WhatsApp Adapter"""
-    
+    """Test WhatsApp adapter"""
+
     @pytest.fixture
     def adapter(self):
-        """Create WhatsAppAdapter instance"""
         from app.adapters.whatsapp_adapter import WhatsAppAdapter
-        return WhatsAppAdapter(
-            twilio_account_sid="test_sid",
-            twilio_auth_token="test_token",
-            twilio_phone_number="+14155238886"
-        )
-    
-    def test_whatsapp_adapter_channel(self, adapter):
-        """Test WhatsApp adapter channel type"""
-        from app.adapters.base import ChannelType
-        assert adapter.channel == ChannelType.WHATSAPP
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_normalize(self, adapter):
-        """Test WhatsApp adapter request normalization"""
-        raw_request = {
-            "Body": "Book a haircut for tomorrow",
-            "From": "whatsapp:+919876543210",
-            "To": "whatsapp:+14155238886",
-            "MessageSid": "SM123456"
-        }
-        
-        result = await adapter.normalize(raw_request)
-        
-        assert result.prompt == "Book a haircut for tomorrow"
-        assert result.channel == "whatsapp"
-        assert "919876543210" in result.metadata.get("from_number", "")
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_normalize_with_media(self, adapter):
-        """Test normalization with media attachments"""
-        raw_request = {
-            "Body": "What hairstyle suits me?",
-            "From": "whatsapp:+919876543210",
-            "NumMedia": "1",
-            "MediaUrl0": "https://example.com/image.jpg",
-            "MediaContentType0": "image/jpeg"
-        }
-        
-        result = await adapter.normalize(raw_request)
-        assert len(result.attachments) == 1
-        assert result.attachments[0]["type"] == "image"
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_normalize_with_location(self, adapter):
-        """Test normalization with location sharing"""
-        raw_request = {
-            "Body": "",
-            "From": "whatsapp:+919876543210",
-            "Latitude": "17.3850",
-            "Longitude": "78.4867"
-        }
-        
-        result = await adapter.normalize(raw_request)
-        # Should have location attachment
-        location_attachments = [a for a in result.attachments if a.get("type") == "location"]
-        assert len(location_attachments) == 1
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_normalize_button_response(self, adapter):
-        """Test normalization with button response"""
-        raw_request = {
-            "Body": "",
-            "From": "whatsapp:+919876543210",
-            "ButtonPayload": "book_haircut"
-        }
-        
-        result = await adapter.normalize(raw_request)
-        assert result.prompt == "book_haircut"
-        assert result.metadata.get("button_response") is True
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_detect_language_hindi(self, adapter):
-        """Test Hindi language detection"""
-        raw_request = {
-            "Body": "मुझे हेयरकट बुक करनी है",
-            "From": "whatsapp:+919876543210"
-        }
-        
-        result = await adapter.normalize(raw_request)
-        assert result.language == "hi"
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_detect_language_telugu(self, adapter):
-        """Test Telugu language detection"""
-        raw_request = {
-            "Body": "నాకు హెయిర్‌కట్ కావాలి",
-            "From": "whatsapp:+919876543210"
-        }
-        
-        result = await adapter.normalize(raw_request)
-        assert result.language == "te"
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_format(self, adapter):
-        """Test WhatsApp adapter response formatting"""
-        from app.adapters.base import AdapterResponse
-        
-        response = AdapterResponse(
-            message="Your appointment is confirmed",
-            success=True,
-            agent_used="booking"
-        )
-        
-        result = await adapter.format(response)
-        
-        assert result["type"] == "text"
-        assert result["text"]["body"] == "Your appointment is confirmed"
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_format_with_suggestions(self, adapter):
-        """Test formatting with suggestions as buttons"""
-        from app.adapters.base import AdapterResponse
-        
-        response = AdapterResponse(
-            message="Choose a time slot",
-            success=True,
-            suggestions=["2 PM", "3 PM", "4 PM"]
-        )
-        
-        result = await adapter.format(response)
-        
-        # Should be interactive with buttons
-        assert result["type"] == "interactive"
-        assert "interactive" in result
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_format_with_image(self, adapter):
-        """Test formatting with image"""
-        from app.adapters.base import AdapterResponse
-        
-        response = AdapterResponse(
-            message="Check out our new style",
-            success=True
-        )
-        
-        result = await adapter.format_with_image(
-            response,
-            image_url="https://example.com/style.jpg",
-            caption="New hairstyle"
-        )
-        
-        assert result["type"] == "image"
-        assert result["image"]["link"] == "https://example.com/style.jpg"
-    
-    @pytest.mark.asyncio
-    async def test_whatsapp_adapter_format_list(self, adapter):
-        """Test formatting as interactive list"""
-        from app.adapters.base import AdapterResponse
-        
-        response = AdapterResponse(
-            message="Select a service",
-            success=True,
-            agent_used="booking"
-        )
-        
-        sections = [{
-            "title": "Hair Services",
-            "rows": [
-                {"id": "haircut", "title": "Haircut"},
-                {"id": "color", "title": "Hair Color"}
-            ]
-        }]
-        
-        result = await adapter.format_list(response, sections)
-        
-        assert result["type"] == "interactive"
-        assert result["interactive"]["type"] == "list"
+        return WhatsAppAdapter(notification_service_url="http://test-notification")
 
+    @pytest.mark.asyncio
+    async def test_send_message_success(self, adapter):
+        from unittest.mock import AsyncMock, MagicMock, patch
+        with patch('httpx.AsyncClient.post') as mock_post:
+            mock_response = MagicMock()
+            mock_response.json.return_value = {"success": True, "message_sid": "msg_123"}
+            mock_response.raise_for_status.return_value = None
+            mock_post.return_value = mock_response
+
+            result = await adapter.send_message(to="+1234567890", message="Test")
+
+            assert result.success is True
+            assert result.message_sid == "msg_123"
+            mock_post.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_send_message_http_error(self, adapter):
+        from unittest.mock import patch
+        import httpx
+        with patch('httpx.AsyncClient.post') as mock_post:
+            mock_request = httpx.Request("POST", "http://test")
+            mock_response = httpx.Response(500, request=mock_request)
+            mock_post.side_effect = httpx.HTTPStatusError("Error", request=mock_request, response=mock_response)
+
+            result = await adapter.send_message(to="+1234567890", message="Test")
+
+            assert result.success is False
+            assert "HTTP error" in result.error
+
+    @pytest.mark.asyncio
+    async def test_send_booking_confirmation(self, adapter):
+        from unittest.mock import patch
+        from app.adapters.whatsapp_adapter import WhatsAppResult
+        with patch.object(adapter, 'send_message') as mock_send:
+            mock_send.return_value = WhatsAppResult(success=True, message_sid="msg_123")
+
+            result = await adapter.send_booking_confirmation(
+                to="+123", customer_name="John", service="Haircut",
+                stylist="Jane", datetime="Tomorrow", salon_name="My Salon"
+            )
+
+            assert result.success is True
+            mock_send.assert_called_once()
 
 class TestVoiceAdapter:
     """Test the Voice Adapter"""
@@ -606,30 +482,8 @@ class TestAdapterIntegration:
     
     @pytest.mark.asyncio
     async def test_whatsapp_to_agent_flow(self, mock_settings):
-        """Test complete flow from WhatsApp adapter to agent"""
-        from app.adapters.whatsapp_adapter import WhatsAppAdapter
-        from app.adapters.base import AdapterResponse
-        
-        adapter = WhatsAppAdapter()
-        
-        # Normalize request
-        normalized = await adapter.normalize({
-            "Body": "Book haircut",
-            "From": "whatsapp:+919876543210"
-        })
-        
-        assert normalized.prompt == "Book haircut"
-        
-        # Format response
-        response = AdapterResponse(
-            message="Booking confirmed",
-            success=True,
-            suggestions=["2 PM", "3 PM"]
-        )
-        
-        formatted = await adapter.format(response)
-        assert formatted["type"] in ["text", "interactive"]
-    
+        pytest.skip("WhatsAppAdapter is now outbound only via Notification Service")
+
     @pytest.mark.asyncio
     async def test_voice_to_agent_flow(self, mock_settings):
         """Test complete flow from voice adapter to agent"""
@@ -673,19 +527,8 @@ class TestAdapterErrorHandling:
     
     @pytest.mark.asyncio
     async def test_whatsapp_adapter_empty_body(self):
-        """Test WhatsApp adapter with empty body"""
-        from app.adapters.whatsapp_adapter import WhatsAppAdapter
-        
-        adapter = WhatsAppAdapter()
-        
-        result = await adapter.normalize({
-            "Body": "",
-            "From": "whatsapp:+919876543210"
-        })
-        
-        # Should handle gracefully
-        assert result.prompt == ""
-    
+        pytest.skip("WhatsAppAdapter is now outbound only via Notification Service")
+
     @pytest.mark.asyncio
     async def test_voice_adapter_missing_call_sid(self):
         """Test voice adapter with missing call SID"""

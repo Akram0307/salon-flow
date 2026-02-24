@@ -3,10 +3,8 @@
  * Floating AI assistant with chat interface
  */
 
-import React, { useState, useRef, useEffect, forwardRef } from 'react';
+import { useState, useRef, useEffect, forwardRef } from 'react';
 import { cn } from '../../lib/utils';
-import { Avatar } from '../ui/Avatar';
-import { Button } from '../ui/Button';
 import type { BaseComponentProps } from '../../types/design-system';
 
 // ============================================

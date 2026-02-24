@@ -1,0 +1,33 @@
+{
+  "name": "salon-flow",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev:owner",
+    "dev:owner": "npm run dev --workspace=@salon-flow/owner",
+    "dev:manager": "npm run dev --workspace=@salon-flow/manager",
+    "dev:staff": "npm run dev --workspace=@salon-flow/staff",
+    "dev:client": "npm run dev --workspace=@salon-flow/client",
+    "build": "npm run build --workspaces",
+    "build:owner": "npm run build --workspace=@salon-flow/owner",
+    "build:shared": "npm run build --workspace=@salon-flow/shared",
+    "build:ui": "npm run build --workspace=@salon-flow/ui",
+    "lint": "npm run lint --workspaces",
+    "test": "npm run test --workspaces",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules apps/*/dist packages/*/dist"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/typography": "^0.5.19",
+    "@types/node": "^20.10.5",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

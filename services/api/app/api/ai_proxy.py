@@ -12,7 +12,7 @@ import structlog
 from app.core.config import settings
 from app.api.dependencies import get_current_user, get_current_salon
 
-router = APIRouter(prefix="/ai", tags=["AI Service"])
+router = APIRouter(prefix="", tags=["AI Service"])
 logger = structlog.get_logger()
 # settings already imported
 

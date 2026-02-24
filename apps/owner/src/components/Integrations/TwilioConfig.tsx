@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import integrationsService, {
   IntegrationMode,
-  TwilioConfig,
+  TwilioConfig as TwilioConfigType,
   TwilioConfigRequest,
   TwilioTestResponse,
 } from '../../services/integrationsService';
@@ -91,7 +91,7 @@ const ModeToggle: React.FC<{
 
 // BYOK Form Component
 const BYOKForm: React.FC<{
-  initialData?: Partial<TwilioConfig>;
+  initialData?: Partial<TwilioConfigType>;
   onSubmit: (data: TwilioConfigRequest) => void;
   onTest: (to: string) => void;
   isLoading: boolean;
@@ -395,7 +395,7 @@ const TwilioConfig: React.FC = () => {
             {/* Test Platform */}
             <div className="pt-4 border-t border-gray-200">
               <button
-n                onClick={() => {
+                onClick={() => {
                   const phone = prompt('Enter phone number to send test message (E.164 format):');
                   if (phone) handleTest(phone);
                 }}
@@ -424,7 +424,7 @@ n                onClick={() => {
             </div>
 
             <BYOKForm
-n              initialData={config?.mode === 'byok' ? config : undefined}
+              initialData={config?.mode === 'byok' ? config : undefined}
               onSubmit={handleSaveBYOK}
               onTest={handleTest}
               isLoading={saveMutation.isPending}

@@ -5,7 +5,6 @@
 
 import React, { forwardRef } from 'react';
 import { cn } from '../../lib/utils';
-import { Badge } from '../ui/Badge';
 import type { BaseComponentProps } from '../../types/design-system';
 
 // ============================================
@@ -40,11 +39,11 @@ const iconColorStyles: Record<string, string> = {
   error: 'bg-error-100 text-error-600 dark:bg-error-900/30 dark:text-error-400',
 };
 
-const trendColorStyles: Record<string, string> = {
-  up: 'text-success-600 dark:text-success-400',
-  down: 'text-error-600 dark:text-error-400',
-  flat: 'text-surface-500 dark:text-surface-400',
-};
+// const trendColorStyles: Record<string, string> = {
+//   up: 'text-success-600 dark:text-success-400',
+//   down: 'text-error-600 dark:text-error-400',
+//   flat: 'text-surface-500 dark:text-surface-400',
+// };
 
 // ============================================
 // Mini Sparkline Component
@@ -101,10 +100,10 @@ export const StatCard = forwardRef<HTMLDivElement, StatCardProps>(
       icon,
       iconColor = 'primary',
       subtitle,
-      trend,
+      
       sparklineData,
       onClick,
-      loading = false,
+      
       className,
     },
     ref

@@ -8,21 +8,21 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Primary - Elegant Purple (Salon-appropriate)
+        // Primary - Indigo
         primary: {
-          50: '#faf5ff',
-          100: '#f3e8ff',
-          200: '#e9d5ff',
-          300: '#d8b4fe',
-          400: '#c084fc',
-          500: '#a855f7',
-          600: '#9333ea',
-          700: '#7c3aed',
-          800: '#6b21a8',
-          900: '#581c87',
-          950: '#3b0764',
+          50: '#eef2ff',
+          100: '#e0e7ff',
+          200: '#c7d2fe',
+          300: '#a5b4fc',
+          400: '#818cf8',
+          500: '#6366f1',
+          600: '#4f46e5',
+          700: '#4338ca',
+          800: '#3730a3',
+          900: '#312e81',
+          950: '#1e1b4b',
         },
-        // Secondary - Rose Gold (Salon accent)
+        // Secondary - Rose
         secondary: {
           50: '#fff1f2',
           100: '#ffe4e6',
@@ -36,7 +36,7 @@ export default {
           900: '#881337',
           950: '#4c0519',
         },
-        // Accent - Teal (Fresh/Modern)
+        // Accent - Teal
         accent: {
           50: '#f0fdfa',
           100: '#ccfbf1',
@@ -50,7 +50,7 @@ export default {
           900: '#134e4a',
           950: '#042f2e',
         },
-        // Success - Green
+        // Success
         success: {
           50: '#f0fdf4',
           100: '#dcfce7',
@@ -63,7 +63,7 @@ export default {
           800: '#166534',
           900: '#14532d',
         },
-        // Warning - Amber
+        // Warning
         warning: {
           50: '#fffbeb',
           100: '#fef3c7',
@@ -76,7 +76,7 @@ export default {
           800: '#92400e',
           900: '#78350f',
         },
-        // Error - Red
+        // Error
         error: {
           50: '#fef2f2',
           100: '#fee2e2',
@@ -89,7 +89,7 @@ export default {
           800: '#991b1b',
           900: '#7f1d1d',
         },
-        // Neutral - Slate (Professional)
+        // Surface - Slate
         surface: {
           50: '#f8fafc',
           100: '#f1f5f9',
@@ -105,8 +105,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-        display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       fontSize: {
@@ -134,10 +134,10 @@ export default {
       },
       boxShadow: {
         'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
-        'card': '0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1)',
+        'card': '0 1px 3px rgba(0, 0, 0, 0.1)',
         'card-hover': '0 10px 40px rgba(0, 0, 0, 0.1)',
-        'glow': '0 0 20px rgba(168, 85, 247, 0.3)',
-        'glow-lg': '0 0 40px rgba(168, 85, 247, 0.4)',
+        'glow': '0 0 20px rgba(99, 102, 241, 0.3)',
+        'glow-lg': '0 0 40px rgba(99, 102, 241, 0.4)',
         'inner-soft': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)',
       },
       animation: {
@@ -146,6 +146,7 @@ export default {
         'fade-in-down': 'fadeInDown 0.4s ease-out',
         'slide-in-right': 'slideInRight 0.3s ease-out',
         'slide-in-left': 'slideInLeft 0.3s ease-out',
+        'slide-in-up': 'slideInUp 0.3s ease-out',
         'scale-in': 'scaleIn 0.2s ease-out',
         'spin-slow': 'spin 3s linear infinite',
         'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
@@ -172,6 +173,10 @@ export default {
         slideInLeft: {
           '0%': { opacity: '0', transform: 'translateX(-20px)' },
           '100%': { opacity: '1', transform: 'translateX(0)' },
+        },
+        slideInUp: {
+          '0%': { opacity: '0', transform: 'translateY(100%)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         scaleIn: {
           '0%': { opacity: '0', transform: 'scale(0.95)' },

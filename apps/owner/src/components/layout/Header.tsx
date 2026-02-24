@@ -6,7 +6,6 @@
 import React, { useState, forwardRef } from 'react';
 import { cn } from '../../lib/utils';
 import { Avatar } from '../ui/Avatar';
-import { Badge } from '../ui/Badge';
 import type { BaseComponentProps } from '../../types/design-system';
 
 // ============================================
@@ -49,7 +48,7 @@ export interface NotificationItem {
 // ============================================
 // Header Component
 // ============================================
-export const Header = forwardRef<HTMLHeaderElement, HeaderProps>(
+export const Header = forwardRef<HTMLElement, HeaderProps>(
   (
     {
       title,
@@ -57,11 +56,11 @@ export const Header = forwardRef<HTMLHeaderElement, HeaderProps>(
       showSearch = true,
       onSearch,
       user,
-      salon,
+      salon: _salon,
       notifications = [],
       onNotificationClick,
       onNotificationReadAll,
-      onUserMenuClick,
+      onUserMenuClick: _onUserMenuClick,
       onSettingsClick,
       onLogout,
       leftContent,
@@ -147,7 +146,7 @@ export const Header = forwardRef<HTMLHeaderElement, HeaderProps>(
 
             {/* AI Assistant Quick Access */}
             <button
-n              className="p-2 rounded-lg bg-gradient-to-r from-primary-500 to-accent-500 text-white hover:shadow-glow transition-shadow"
+              className="p-2 rounded-lg bg-gradient-to-r from-primary-500 to-accent-500 text-white hover:shadow-glow transition-shadow"
               aria-label="Open AI Assistant"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -19,7 +19,14 @@
     "axios": "^1.6.5",
     "clsx": "^2.1.0",
     "tailwind-merge": "^2.2.0",
-    "lucide-react": "^0.303.0"
+    "lucide-react": "^0.303.0",
+    "@fullcalendar/react": "^6.1.10",
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/timegrid": "^6.1.10",
+    "@fullcalendar/interaction": "^6.1.10",
+    "@salon-flow/shared": "*",
+    "@salon-flow/ui": "*",
+    "date-fns": "^3.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

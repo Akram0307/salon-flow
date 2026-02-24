@@ -27,7 +27,7 @@ from app.core.auth import (
     verify_password,
 )
 from app.core.config import settings
-from app.core.firebase import get_firestore_client
+from app.core.firebase import get_firestore_async
 from app.schemas import StaffRole
 
 logger = structlog.get_logger()
@@ -579,7 +579,7 @@ async def get_auth_service() -> AuthService:
     Yields:
         AuthService instance
     """
-    db = await get_firestore_client()
+    db = get_firestore_async()
     yield AuthService(db)
 
 

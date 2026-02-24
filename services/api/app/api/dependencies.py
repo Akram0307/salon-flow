@@ -493,3 +493,43 @@ __all__ = [
     "verify_customer_access",
     "verify_booking_access",
 ]
+
+
+# ============================================================================
+# String-based Role Check (for convenience)
+# ============================================================================
+
+def require_roles(role_names: List[str]):
+    """Dependency that requires specific roles by string name.
+    
+    Convenience wrapper around require_role that accepts string role names
+    instead of StaffRole enums.
+    
+    Args:
+        role_names: List of role name strings (e.g., ['owner', 'manager'])
+        
+    Returns:
+        Dependency function that validates role
+        
+    Example:
+        @router.get("/protected")
+        async def protected_route(
+            user: AuthContext = Depends(require_roles(['owner', 'manager']))
+        ):
+            ...
+    """
+    # Convert string names to StaffRole enums
+    roles = []
+    for name in role_names:
+        try:
+            role = StaffRole(name.lower())
+            roles.append(role)
+        except ValueError:
+            # Invalid role name, will be caught during validation
+            pass
+    
+    return require_role(roles)
+
+
+# Update exports
+__all__.append('require_roles')

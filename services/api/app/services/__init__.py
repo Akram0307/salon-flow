@@ -1,4 +1,4 @@
-"""Services package"""
-from app.services.event_publisher import EventPublisher, publish_event
+"""Services module for Salon Flow API."""
+from .service_templates import get_service_templates
 
-__all__ = ["EventPublisher", "publish_event"]
+__all__ = ["get_service_templates"]

@@ -48,9 +48,9 @@ export interface BookingCardProps extends BaseComponentProps {
 const statusConfig: Record<BookingStatus, { label: string; variant: 'default' | 'success' | 'warning' | 'error' | 'info' | 'secondary' }> = {
   pending: { label: 'Pending', variant: 'warning' },
   confirmed: { label: 'Confirmed', variant: 'success' },
-  cancelled: { label: 'Cancelled', variant: 'error' },
+  cancelled: { label: 'Cancelled', variant: 'secondary' },
   completed: { label: 'Completed', variant: 'secondary' },
-  'no-show': { label: 'No Show', variant: 'error' },
+  'no-show': { label: 'No Show', variant: 'secondary' },
   'in-progress': { label: 'In Progress', variant: 'info' },
 };
 
@@ -60,7 +60,7 @@ const statusConfig: Record<BookingStatus, { label: string; variant: 'default' | 
 export const BookingCard = forwardRef<HTMLDivElement, BookingCardProps>(
   (
     {
-      id,
+      id: _id,
       customer,
       service,
       staff,

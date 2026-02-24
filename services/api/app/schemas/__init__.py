@@ -369,3 +369,35 @@ __all__ = [
     "LeaveRequestCreate",
     "LeaveRequestUpdate",
 ]
+
+# Onboarding schemas
+from .onboarding import (
+    OnboardingStep,
+    OnboardingStatus,
+    OnboardingProgress,
+    OnboardingState,
+    OnboardingResponse,
+    SalonCreateRequest,
+    LayoutConfigRequest,
+    BusinessHoursRequest,
+    ServiceImportRequest,
+    StaffInviteRequest,
+    JoinSalonRequest,
+    InviteCodeInfo,
+)
+
+__all__.extend([
+    # Onboarding
+    "OnboardingStep",
+    "OnboardingStatus",
+    "OnboardingProgress",
+    "OnboardingState",
+    "OnboardingResponse",
+    "SalonCreateRequest",
+    "LayoutConfigRequest",
+    "BusinessHoursRequest",
+    "ServiceImportRequest",
+    "StaffInviteRequest",
+    "JoinSalonRequest",
+    "InviteCodeInfo",
+])

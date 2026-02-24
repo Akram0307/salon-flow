@@ -1,0 +1,86 @@
+{
+  "passed": 12,
+  "failed": 4,
+  "tests": [
+    {
+      "name": "api health check",
+      "passed": true,
+      "details": "{\"status\":\"healthy\",\"environment\":\"production\",\"firebase\":\"ready\",\"redis\":\"ready\"}"
+    },
+    {
+      "name": "ai health check",
+      "passed": true,
+      "details": "{\"status\":\"healthy\",\"service\":\"ai-service\",\"version\":\"0.1.0\",\"openrouter\":\"connected\",\"redis\":\"conne"
+    },
+    {
+      "name": "notification health check",
+      "passed": true,
+      "details": "{\"status\":\"healthy\",\"service\":\"notification-service\",\"version\":\"0.1.0\",\"twilio_configured\":true,\"wha"
+    },
+    {
+      "name": "owner_pwa health check",
+      "passed": true,
+      "details": "healthy\n"
+    },
+    {
+      "name": "API OpenAPI spec accessible",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "API has 86 endpoints",
+      "passed": true,
+      "details": "Found 86"
+    },
+    {
+      "name": "Auth register endpoint exists",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "AI service health",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "AI OpenRouter connected",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "AI Redis connected",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "AI chat endpoint exists",
+      "passed": false,
+      "details": ""
+    },
+    {
+      "name": "Notification service health",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "API CORS allows owner PWA origin",
+      "passed": false,
+      "details": ""
+    },
+    {
+      "name": "API proxies to AI service",
+      "passed": true,
+      "details": ""
+    },
+    {
+      "name": "Bookings endpoint exists",
+      "passed": false,
+      "details": ""
+    },
+    {
+      "name": "Customers endpoint exists",
+      "passed": false,
+      "details": ""
+    }
+  ]
+}

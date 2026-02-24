@@ -6,7 +6,6 @@
 import React, { forwardRef } from 'react';
 import { cn } from '../../lib/utils';
 import { Avatar } from '../ui/Avatar';
-import { Badge } from '../ui/Badge';
 import type { BaseComponentProps } from '../../types/design-system';
 
 // ============================================
@@ -181,7 +180,7 @@ export const ActivityFeed = forwardRef<HTMLDivElement, ActivityFeedProps>(
       activities,
       maxItems = 10,
       showTimestamp = true,
-      groupByDate = false,
+      groupByDate: _groupByDate = false,
       emptyMessage = 'No recent activity',
       onLoadMore,
       hasMore = false,

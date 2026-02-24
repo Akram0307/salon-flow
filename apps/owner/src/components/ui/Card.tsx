@@ -15,6 +15,9 @@ export interface CardProps extends BaseComponentProps, React.HTMLAttributes<HTML
   hoverable?: boolean;
   clickable?: boolean;
   padding?: 'none' | 'sm' | 'md' | 'lg';
+  title?: string;
+  subtitle?: string;
+  actions?: React.ReactNode;
 }
 
 export interface CardHeaderProps extends BaseComponentProps {
@@ -57,6 +60,9 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       hoverable = false,
       clickable = false,
       padding = 'none',
+      title,
+      subtitle,
+      actions,
       className,
       children,
       ...props
@@ -67,21 +73,35 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          // Base styles
           'rounded-xl overflow-hidden',
           'transition-all duration-200 ease-smooth',
-          // Variant styles
           variantStyles[variant],
-          // Padding
           paddingStyles[padding],
-          // Interactive states
           hoverable && 'hover:shadow-card-hover hover:-translate-y-0.5',
           clickable && 'cursor-pointer hover:shadow-card-hover active:scale-[0.99]',
-          // Custom className
           className
         )}
         {...props}
       >
+        {(title || subtitle || actions) && (
+          <div className="px-4 sm:px-5 py-4 border-b border-surface-100 dark:border-surface-700">
+            <div className="flex items-start justify-between gap-4">
+              <div className="min-w-0 flex-1">
+                {title && (
+                  <h3 className="text-base font-semibold text-surface-900 dark:text-white truncate">
+                    {title}
+                  </h3>
+                )}
+                {subtitle && (
+                  <p className="mt-0.5 text-sm text-surface-500 dark:text-surface-400 truncate">
+                    {subtitle}
+                  </p>
+                )}
+              </div>
+              {actions && <div className="flex-shrink-0">{actions}</div>}
+            </div>
+          </div>
+        )}
         {children}
       </div>
     );
@@ -149,7 +169,7 @@ export const CardFooter: React.FC<CardFooterProps> = ({
   className,
   children,
 }) => {
-  const alignStyles: Record<string, string> = {
+  const alignStyles = {
     left: 'justify-start',
     center: 'justify-center',
     right: 'justify-end',
@@ -159,7 +179,7 @@ export const CardFooter: React.FC<CardFooterProps> = ({
   return (
     <div
       className={cn(
-        'px-4 sm:px-5 py-3 bg-surface-50 dark:bg-surface-800/50 border-t border-surface-100 dark:border-surface-700',
+        'px-4 sm:px-5 py-4 border-t border-surface-100 dark:border-surface-700',
         'flex items-center gap-3',
         alignStyles[align],
         className
@@ -178,68 +198,52 @@ export interface StatCardProps extends BaseComponentProps {
   value: string | number;
   change?: {
     value: number;
-    direction: 'up' | 'down' | 'neutral';
+    type: 'neutral' | 'increase' | 'decrease';
+    period?: string;
   };
   icon?: React.ReactNode;
-  trend?: 'positive' | 'negative' | 'neutral';
-  prefix?: string;
-  suffix?: string;
+  color?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info';
 }
+
+const statColorStyles = {
+  primary: 'bg-primary-50 text-primary-600',
+  secondary: 'bg-secondary-50 text-secondary-600',
+  success: 'bg-green-50 text-green-600',
+  warning: 'bg-yellow-50 text-yellow-600',
+  error: 'bg-red-50 text-red-600',
+  info: 'bg-blue-50 text-blue-600',
+};
+
+const changeColorStyles = {
+  increase: 'text-green-600',
+  decrease: 'text-red-600',
+  neutral: 'text-surface-500',
+};
 
 export const StatCard: React.FC<StatCardProps> = ({
   title,
   value,
   change,
   icon,
-  trend = 'neutral',
-  prefix,
-  suffix,
+  color = 'primary',
   className,
 }) => {
-  const trendColors = {
-    positive: 'text-success-600 dark:text-success-400 bg-success-50 dark:bg-success-900/20',
-    negative: 'text-error-600 dark:text-error-400 bg-error-50 dark:bg-error-900/20',
-    neutral: 'text-surface-500 dark:text-surface-400 bg-surface-100 dark:bg-surface-700',
-  };
-
   return (
-    <Card variant="default" className={cn('p-5', className)}>
+    <Card className={cn('p-5', className)}>
       <div className="flex items-start justify-between">
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-surface-500 dark:text-surface-400 truncate">
-            {title}
-          </p>
-          <p className="mt-2 text-2xl sm:text-3xl font-bold text-surface-900 dark:text-white">
-            {prefix && <span className="text-lg mr-0.5">{prefix}</span>}
-            {value}
-            {suffix && <span className="text-lg ml-0.5">{suffix}</span>}
-          </p>
+        <div className="flex-1">
+          <p className="text-sm font-medium text-surface-500 dark:text-surface-400">{title}</p>
+          <p className="mt-1 text-2xl font-bold text-surface-900 dark:text-white">{value}</p>
           {change && (
-            <div className="mt-2 flex items-center gap-1.5">
-              <span
-                className={cn(
-                  'inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-medium',
-                  trendColors[trend]
-                )}
-              >
-                {change.direction === 'up' && (
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                )}
-                {change.direction === 'down' && (
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                )}
-                {change.value}%
-              </span>
-              <span className="text-xs text-surface-400 dark:text-surface-500">vs last period</span>
-            </div>
+            <p className={cn('mt-1 text-sm', changeColorStyles[change.type])}>
+              {change.type === 'increase' && '+'}
+              {change.value}%
+              {change.period && <span className="text-surface-400 ml-1">{change.period}</span>}
+            </p>
           )}
         </div>
         {icon && (
-          <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400">
+          <div className={cn('p-2 rounded-lg', statColorStyles[color])}>
             {icon}
           </div>
         )}

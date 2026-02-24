@@ -13,11 +13,12 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     PORT: int = 8080  # Cloud Run default port
     
-    # Security
-    SECRET_KEY: str = secrets.token_urlsafe(32)  # For session signing
+    # Security - MUST be set via environment variable in production
+    # SECRET_KEY is used for session signing and general security
+    SECRET_KEY: str = ""  # No default - must be set via env
     
     # JWT Authentication
-    JWT_SECRET: str = "dev-jwt-secret-key-change-in-production"
+    JWT_SECRET: str = ""  # No default - must be set via env
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION: int = 3600  # 1 hour
     JWT_REFRESH_EXPIRATION: int = 604800  # 7 days
@@ -48,8 +49,9 @@ class Settings(BaseSettings):
     TWILIO_AUTH_TOKEN: str = ""
     TWILIO_PHONE_NUMBER: str = ""
     
-    # CORS
+    # CORS - Production URLs from Cloud Run
     CORS_ORIGINS: List[str] = [
+        # Local development
         "http://localhost:3000",
         "http://localhost:3001",
         "http://localhost:3002",
@@ -58,6 +60,14 @@ class Settings(BaseSettings):
         "http://localhost:5174",
         "http://localhost:5175",
         "http://localhost:5176",
+        # Production Cloud Run URLs
+        "https://salon-flow-owner-rgvcleapsa-el.a.run.app",
+        "https://salon-flow-manager-rgvcleapsa-el.a.run.app",
+        "https://salon-flow-staff-rgvcleapsa-el.a.run.app",
+        "https://salon-flow-client-rgvcleapsa-el.a.run.app",
+        # API and AI services (for internal calls)
+        "https://salon-flow-api-rgvcleapsa-el.a.run.app",
+        "https://salon-flow-ai-rgvcleapsa-el.a.run.app",
     ]
     
     # Salon Business Settings
@@ -72,6 +82,18 @@ class Settings(BaseSettings):
     MAX_FUTURE_BOOKING_DAYS: int = 30
     CANCELLATION_HOURS: int = 2  # Free cancellation up to 2 hours before
     LATE_ARRIVAL_MINUTES: int = 15  # Auto-reschedule after 15 min late
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        # Generate secrets for development if not set
+        if not self.SECRET_KEY:
+            if self.ENVIRONMENT == "production":
+                raise ValueError("SECRET_KEY must be set in production environment")
+            self.SECRET_KEY = secrets.token_urlsafe(32)
+        if not self.JWT_SECRET:
+            if self.ENVIRONMENT == "production":
+                raise ValueError("JWT_SECRET must be set in production environment")
+            self.JWT_SECRET = "dev-jwt-secret-key-not-for-production"
     
     @property
     def effective_redis_url(self) -> str:

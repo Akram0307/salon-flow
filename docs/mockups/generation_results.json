@@ -1,0 +1,103 @@
+{
+  "model": "google/gemini-3-pro-image-preview",
+  "timestamp": "2026-02-22T16:52:17.121316",
+  "total": 16,
+  "results": [
+    {
+      "filename": "01_onboarding_welcome",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "02_onboarding_salon_details",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "03_onboarding_layout",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "04_onboarding_services",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "05_onboarding_staff",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "06_dashboard_home",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "07_bookings_calendar",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "08_new_booking",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "09_customer_profile",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "10_staff_management",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "11_analytics_dashboard",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "12_ai_assistant",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "13_settings",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "14_morning_pulse",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "15_notifications",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    },
+    {
+      "filename": "16_payments",
+      "success": true,
+      "error": null,
+      "description": "No text content"
+    }
+  ]
+}

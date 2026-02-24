@@ -1,0 +1,15 @@
+{
+  "testDir": "./tests/e2e",
+  "testMatch": "integration.spec.ts",
+  "projects": [
+    {
+      "name": "chromium",
+      "use": {
+        "browserName": "chromium"
+      }
+    }
+  ],
+  "reporter": "list",
+  "timeout": 30000,
+  "retries": 0
+}

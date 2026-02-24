@@ -21,6 +21,7 @@ from app.api.waitlist import router as waitlist_router
 from app.api.feedback import router as feedback_router
 from app.api.analytics import router as analytics_router
 from app.api.integrations import router as integrations_router
+from app.api.billing import router as billing_router
 
 # Main API router
 api_router = APIRouter()
@@ -42,6 +43,7 @@ api_router.include_router(waitlist_router)
 api_router.include_router(feedback_router)
 api_router.include_router(analytics_router)
 api_router.include_router(integrations_router)
+api_router.include_router(billing_router)
 
 __all__ = [
     "api_router",
@@ -61,4 +63,5 @@ __all__ = [
     "feedback_router",
     "analytics_router",
     "integrations_router",
+    "billing_router",
 ]

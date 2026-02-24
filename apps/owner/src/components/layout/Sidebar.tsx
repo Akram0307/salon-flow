@@ -3,7 +3,7 @@
  * Professional sidebar with navigation, collapse, and responsive design
  */
 
-import React, { useState, forwardRef } from 'react';
+import React, { forwardRef } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { cn } from '../../lib/utils';
 import type { BaseComponentProps } from '../../types/design-system';
@@ -140,7 +140,7 @@ const defaultNavItems: NavItem[] = [
 // ============================================
 // Sidebar Nav Item Component
 // ============================================
-const SidebarNavItem: React.FC<SidebarNavItemProps> = ({ item, collapsed, active }) => {
+const SidebarNavItem: React.FC<SidebarNavItemProps> = ({ item, collapsed, active: _active }) => {
   const badgeColorStyles: Record<string, string> = {
     primary: 'bg-primary-100 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300',
     secondary: 'bg-secondary-100 text-secondary-700 dark:bg-secondary-900/30 dark:text-secondary-300',

@@ -1,0 +1,52 @@
+# This file overrides .gitignore for gcloud builds
+# We need to INCLUDE dist folders for deployment
+
+.gcloudignore
+.git
+.gitignore
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+venv/
+.venv/
+*.egg-info/
+.eggs/
+
+# Node modules (large, not needed for pre-built static files)
+node_modules/
+.npm
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Test and coverage files
+.coverage
+.pytest_cache/
+coverage.json
+htmlcov/
+
+# Logs and temp files
+*.log
+*.tmp
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Firebase
+.firebase/
+
+# Opencode
+.opencode/
+
+# Large documentation
+docs/

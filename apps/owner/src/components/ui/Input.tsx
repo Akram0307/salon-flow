@@ -182,7 +182,8 @@ Input.displayName = 'Input';
 // ============================================
 // Textarea Component
 // ============================================
-export interface TextareaProps extends InputProps {
+export interface TextareaProps extends Omit<InputProps, 'onChange'> {
+  onChange?: React.ChangeEventHandler<HTMLTextAreaElement>;
   rows?: number;
   resize?: 'none' | 'vertical' | 'horizontal' | 'both';
 }
@@ -208,12 +209,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
     const inputId = id || `textarea-${Math.random().toString(36).substring(2, 9)}`;
     const hasError = !!error;
 
-    const resizeStyles: Record<string, string> = {
-      none: 'resize-none',
-      vertical: 'resize-y',
-      horizontal: 'resize-x',
-      both: 'resize',
-    };
+    // resizeStyles unused
 
     return (
       <div className={cn(fullWidth && 'w-full', className)}>
@@ -226,26 +222,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           </label>
         )}
 
-        <textarea
-          ref={ref}
-          id={inputId}
-          disabled={disabled}
-          rows={rows}
-          className={cn(
-            'block rounded-lg w-full',
-            'text-surface-900 dark:text-white',
-            'placeholder:text-surface-400 dark:placeholder:text-surface-500',
-            'focus:outline-none focus:ring-2 focus:ring-offset-0',
-            'disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-surface-100 dark:disabled:bg-surface-800',
-            'transition-colors duration-150',
-            variantStyles[variant],
-            sizeStyles[size],
-            resizeStyles[resize],
-            hasError && 'border-error-500 focus:border-error-500 focus:ring-error-500'
-          )}
-          aria-invalid={hasError}
-          aria-describedby={hasError ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
-          {...props}
+        <textarea ref={ref} {...props as React.TextareaHTMLAttributes<HTMLTextAreaElement>}
         />
 
         {helperText && !hasError && (

@@ -1,0 +1,7 @@
+total 28
+drwxr-xr-x 6 root root 4096 Feb 22 06:30 .
+drwxr-xr-x 1 root root 4096 Feb 22 04:47 ..
+drwxr-xr-x 3 root root 4096 Feb 22 04:51 chromium-1208
+drwxr-xr-x 3 root root 4096 Feb 22 04:51 chromium_headless_shell-1208
+drwxr-xr-x 2 root root 4096 Feb 22 04:51 ffmpeg-1011
+drwxr-xr-x 2 root root 4096 Feb 22 04:47 .links

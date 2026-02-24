@@ -137,9 +137,9 @@ export type InputVariant = 'default' | 'filled' | 'flushed' | 'unstyled';
 
 export type CardVariant = 'default' | 'elevated' | 'outlined' | 'filled';
 
-export type BadgeVariant = 'default' | 'solid' | 'outline' | 'subtle';
+export type BadgeVariant = 'default' | 'solid' | 'outline' | 'subtle' | 'success' | 'warning' | 'error' | 'info' | 'secondary';
 
-export type BadgeColor = ColorVariant | 'gray';
+export type BadgeColor = ColorVariant | 'gray' | 'info';
 
 export type AlertVariant = 'solid' | 'subtle' | 'outline' | 'left-accent' | 'top-accent';
 
@@ -283,3 +283,5 @@ export type PolymorphicComponentProps<E extends React.ElementType, Props = objec
 
 export type PolymorphicComponent<E extends React.ElementType, Props = object> = 
   React.ForwardRefExoticComponent<PolymorphicComponentProps<E, Props>>;
+
+export type BookingStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'no-show' | 'in-progress';

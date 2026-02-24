@@ -136,3 +136,27 @@ workbox-*.js
 # Opencode
 .opencode/
 services/api/gcp_credentials.json
+
+# Playwright Test Artifacts
+test-results/
+playwright-report/
+playwright-report-gcp/
+*.trace.zip
+
+# Debug files
+debug-*.json
+*.log
+*.bak
+
+# Environment files
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Build artifacts
+dist/
+*.tsbuildinfo

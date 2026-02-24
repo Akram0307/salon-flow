@@ -467,3 +467,16 @@ def cached(
 
 # Global instance
 redis_client = RedisClient()
+
+
+# ============================================================================
+# Helper Functions
+# ============================================================================
+
+def get_redis_client() -> RedisClient:
+    """Get the global Redis client instance.
+    
+    Returns:
+        RedisClient: The global Redis client instance.
+    """
+    return redis_client

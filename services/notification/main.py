@@ -3,6 +3,7 @@ Salon Flow - Notification Service
 WhatsApp, SMS, Voice notifications via Twilio
 """
 import os
+import json
 import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -34,6 +35,50 @@ structlog.configure(
 logger = structlog.get_logger()
 
 
+def init_firebase():
+    """Initialize Firebase Admin SDK for JWT verification."""
+    import firebase_admin
+    from firebase_admin import credentials
+    
+    if firebase_admin._apps:
+        logger.debug("Firebase already initialized")
+        return
+    
+    project_id = settings.firebase_project_id
+    
+    # Check for service account credentials
+    gcp_key_json = os.getenv("GCP_JSON_KEY")
+    gcp_key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+    
+    if gcp_key_json:
+        try:
+            key_dict = json.loads(gcp_key_json)
+            cred = credentials.Certificate(key_dict)
+            project_id = key_dict.get("project_id", project_id)
+            logger.info("Initializing Firebase with service account from env",
+                       project_id=project_id)
+            firebase_admin.initialize_app(cred, {
+                "projectId": project_id,
+            })
+        except json.JSONDecodeError as e:
+            logger.error("Failed to parse GCP_JSON_KEY", error=str(e))
+            raise
+    elif gcp_key_path and os.path.exists(gcp_key_path):
+        cred = credentials.Certificate(gcp_key_path)
+        logger.info("Initializing Firebase with service account file",
+                   path=gcp_key_path)
+        firebase_admin.initialize_app(cred, {
+            "projectId": project_id,
+        })
+    else:
+        logger.info("Initializing Firebase with Application Default Credentials")
+        firebase_admin.initialize_app(options={
+            "projectId": project_id,
+        })
+    
+    logger.info("Firebase initialized successfully", project_id=project_id)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan - startup and shutdown"""
@@ -41,8 +86,18 @@ async def lifespan(app: FastAPI):
     logger.info(
         "Starting Notification Service",
         app_name=settings.app_name,
-        version=settings.app_version
+        version=settings.app_version,
+        environment=settings.environment
     )
+    
+    # Initialize Firebase for JWT verification
+    try:
+        init_firebase()
+        logger.info("Firebase initialized for JWT verification")
+    except Exception as e:
+        logger.error("Failed to initialize Firebase", error=str(e))
+        if settings.environment == "production":
+            raise
     
     # Load secrets from GCP Secret Manager if running on Cloud Run
     if os.getenv("K_SERVICE"):
@@ -107,12 +162,13 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# CORS Configuration - Use configured origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Request-Id"],
 )
 
 # Include routers
@@ -127,7 +183,8 @@ async def health_check():
         "service": "notification-service",
         "version": settings.app_version,
         "twilio_configured": bool(settings.twilio_account_sid),
-        "whatsapp_configured": bool(settings.twilio_whatsapp_number)
+        "whatsapp_configured": bool(settings.twilio_whatsapp_number),
+        "firebase_initialized": True
     }
 
 

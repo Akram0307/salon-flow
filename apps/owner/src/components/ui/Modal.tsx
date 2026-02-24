@@ -3,7 +3,7 @@
  * Professional modal with animations and accessibility
  */
 
-import React, { useEffect, useCallback, forwardRef } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { cn } from '../../lib/utils';
 import type { ModalSize, BaseComponentProps } from '../../types/design-system';
 

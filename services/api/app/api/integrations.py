@@ -15,7 +15,7 @@ from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 
 from app.api.dependencies import get_current_user, AuthContext, require_owner
-from app.core.firebase import get_firestore_client
+from app.core.firebase import get_firestore_async
 from app.core.encryption import encrypt_credential, decrypt_credential
 from app.schemas.integration import (
     IntegrationMode,
@@ -46,15 +46,10 @@ PLATFORM_WHATSAPP_NUMBER = os.getenv("TWILIO_WHATSAPP_NUMBER")
 # Helper Functions
 # ============================================================================
 
-def get_integration_doc_ref(salon_id: str) -> firestore.DocumentReference:
-    """Get Firestore document reference for salon integration."""
-    db = get_firestore_client()
-    return db.collection(INTEGRATIONS_COLLECTION).document(salon_id)
-
-
 async def get_salon_integration(salon_id: str) -> Optional[SalonIntegration]:
     """Get salon integration from Firestore."""
-    doc_ref = get_integration_doc_ref(salon_id)
+    db = get_firestore_async()
+    doc_ref = db.collection(INTEGRATIONS_COLLECTION).document(salon_id)
     doc = await doc_ref.get()
     
     if not doc.exists:
@@ -65,14 +60,16 @@ async def get_salon_integration(salon_id: str) -> Optional[SalonIntegration]:
 
 async def save_salon_integration(integration: SalonIntegration) -> None:
     """Save salon integration to Firestore."""
-    doc_ref = get_integration_doc_ref(integration.salon_id)
+    db = get_firestore_async()
+    doc_ref = db.collection(INTEGRATIONS_COLLECTION).document(integration.salon_id)
     integration.updated_at = datetime.utcnow()
     await doc_ref.set(integration.to_firestore())
 
 
 async def delete_salon_integration(salon_id: str) -> None:
     """Delete salon integration from Firestore."""
-    doc_ref = get_integration_doc_ref(salon_id)
+    db = get_firestore_async()
+    doc_ref = db.collection(INTEGRATIONS_COLLECTION).document(salon_id)
     await doc_ref.delete()
 
 
@@ -122,8 +119,7 @@ async def test_twilio_credentials(
 # ============================================================================
 
 @router.get("/twilio", response_model=TwilioConfigResponse)
-async def get_twilio_config(   auth: AuthContext = Depends(get_current_user),
-):
+async def get_twilio_config(auth: AuthContext = Depends(get_current_user)):
     """Get current Twilio configuration for the salon.
     
     Returns masked configuration (sensitive fields hidden).

@@ -1,4 +1,4 @@
-"""Notification Service Router with Multi-Tenant Support"""
+"""Notification Service Router with Multi-Tenant Support and Authentication"""
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from pydantic import BaseModel, Field
 from typing import Optional, List
@@ -7,6 +7,7 @@ import structlog
 
 from .config import settings
 from .twilio_client import TwilioClient, TwilioClientFactory, MessageResult
+from .core.auth import get_current_user, AuthContext
 
 logger = structlog.get_logger()
 router = APIRouter()
@@ -225,26 +226,41 @@ def get_credential_resolver() -> CredentialResolver:
 
 
 # ============================================================================
-# API Endpoints
+# API Endpoints (with Authentication)
 # ============================================================================
 
 @router.post("/whatsapp/send", response_model=WhatsAppSendResponse)
 async def send_whatsapp(
     request: WhatsAppSendRequest,
     background_tasks: BackgroundTasks,
+    current_user: AuthContext = Depends(get_current_user),
 ):
     """Send WhatsApp message to a phone number.
     
-    Uses salon-specific BYOK credentials if configured, otherwise platform credentials.
+    Requires JWT authentication. Uses salon-specific BYOK credentials if configured,
+    otherwise platform credentials.
+    
+    **Authentication Required**: Bearer token in Authorization header.
     """
     try:
+        # Use authenticated user's salon_id if not provided in request
+        effective_salon_id = request.salon_id or current_user.salon_id
+        
         resolver = get_credential_resolver()
-        client = await resolver.resolve_twilio_client(request.salon_id)
+        client = await resolver.resolve_twilio_client(effective_salon_id)
         
         result = await client.send_whatsapp(
             to=request.to,
             message=request.message,
             media_url=request.media_url
+        )
+        
+        logger.info(
+            "WhatsApp message sent",
+            to=request.to,
+            salon_id=effective_salon_id,
+            user_id=current_user.uid,
+            success=result.success
         )
         
         return WhatsAppSendResponse(
@@ -264,18 +280,33 @@ async def send_whatsapp(
 @router.post("/sms/send", response_model=SMSSendResponse)
 async def send_sms(
     request: SMSSendRequest,
+    current_user: AuthContext = Depends(get_current_user),
 ):
     """Send SMS message to a phone number.
     
-    Uses salon-specific BYOK credentials if configured, otherwise platform credentials.
+    Requires JWT authentication. Uses salon-specific BYOK credentials if configured,
+    otherwise platform credentials.
+    
+    **Authentication Required**: Bearer token in Authorization header.
     """
     try:
+        # Use authenticated user's salon_id if not provided in request
+        effective_salon_id = request.salon_id or current_user.salon_id
+        
         resolver = get_credential_resolver()
-        client = await resolver.resolve_twilio_client(request.salon_id)
+        client = await resolver.resolve_twilio_client(effective_salon_id)
         
         result = await client.send_sms(
             to=request.to,
             message=request.message
+        )
+        
+        logger.info(
+            "SMS sent",
+            to=request.to,
+            salon_id=effective_salon_id,
+            user_id=current_user.uid,
+            success=result.success
         )
         
         return SMSSendResponse(
@@ -293,14 +324,23 @@ async def send_sms(
 
 
 @router.post("/test", response_model=TestMessageResponse)
-async def send_test_message(request: TestMessageRequest):
+async def send_test_message(
+    request: TestMessageRequest,
+    current_user: AuthContext = Depends(get_current_user),
+):
     """Send test WhatsApp message to verify configuration.
     
-    Uses salon-specific BYOK credentials if configured, otherwise platform credentials.
+    Requires JWT authentication. Uses salon-specific BYOK credentials if configured,
+    otherwise platform credentials.
+    
+    **Authentication Required**: Bearer token in Authorization header.
     """
     try:
+        # Use authenticated user's salon_id if not provided in request
+        effective_salon_id = request.salon_id or current_user.salon_id
+        
         resolver = get_credential_resolver()
-        client = await resolver.resolve_twilio_client(request.salon_id)
+        client = await resolver.resolve_twilio_client(effective_salon_id)
         
         result = await client.send_whatsapp(
             to=request.to,
@@ -345,12 +385,25 @@ async def get_notification_status():
 
 
 @router.get("/salon/{salon_id}/config")
-async def get_salon_notification_config(salon_id: str):
+async def get_salon_notification_config(
+    salon_id: str,
+    current_user: AuthContext = Depends(get_current_user),
+):
     """Get notification configuration for a specific salon.
     
-    Returns the integration mode and status without exposing sensitive credentials.
+    Requires JWT authentication. Returns the integration mode and status
+    without exposing sensitive credentials.
+    
+    **Authentication Required**: Bearer token in Authorization header.
     """
     try:
+        # Verify user has access to this salon
+        if current_user.salon_id and current_user.salon_id != salon_id:
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied to this salon's configuration"
+            )
+        
         resolver = get_credential_resolver()
         integration = await resolver.get_salon_integration(salon_id)
         
@@ -372,6 +425,8 @@ async def get_salon_notification_config(salon_id: str):
             "using_platform": integration.mode == "platform",
         }
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error("Error getting salon notification config", error=str(e))
         raise HTTPException(status_code=500, detail=str(e))
